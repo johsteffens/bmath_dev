@@ -1,0 +1,5 @@
+bmath_dev.*
+build/bmath_dev
+dev
+bin
+obj
