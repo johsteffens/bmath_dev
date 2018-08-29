@@ -1,10 +1,12 @@
 /// Author & Copyright (C) 2018 Johannes Bernhard Steffens. All rights reserved.
 
-#include "svd.h"
 #include <sys/time.h>
 
 #include "bmath_std.h"
 #include "bmath_mf3_eval.h"
+
+#include "svd.h"
+#include "mul.h"
 
 void randomizer( void )
 {
@@ -84,11 +86,16 @@ int main( void )
 //    eval->log_v = true;
 //    eval->rows = 10; eval->cols = 10; bmath_arr_mf3_eval_s_push( arr_eval, eval );
     eval->rows = 1000; eval->cols = 1000; bmath_arr_mf3_eval_s_push( arr_eval, eval );
+//    eval->rows = 1024; eval->cols = 1024; bmath_arr_mf3_eval_s_push( arr_eval, eval );
+
+//    bmath_arr_mf3_eval_s_run_to_stdout( arr_eval, TYPEOF_bmath_fp_mf3_s_mul_htp    , ( fp_t )bmath_mf3_s_mul_htp  );
+    bmath_arr_mf3_eval_s_run_to_stdout( arr_eval, TYPEOF_bmath_fp_mf3_s_mul_htp    , ( fp_t )bmath_mf3_s_mul_htp2 );
+//    bmath_arr_mf3_eval_s_run_to_stdout( arr_eval, TYPEOF_bmath_fp_mf3_s_mul        , ( fp_t )bmath_mf3_s_mul2 );
+
 
 /*
     bmath_arr_mf3_eval_s_run_to_stdout( arr_eval, TYPEOF_bmath_fp_mf3_s_cld    , ( fp_t )bmath_mf3_s_decompose_cholesky );
     bmath_arr_mf3_eval_s_run_to_stdout( arr_eval, TYPEOF_bmath_fp_mf3_s_lud    , ( fp_t )bmath_mf3_s_decompose_luc );
-*/
 
     bmath_arr_mf3_eval_s_run_to_stdout( arr_eval, TYPEOF_bmath_fp_mf3_s_lqd    , ( fp_t )bmath_mf3_s_lqd );
     bmath_arr_mf3_eval_s_run_to_stdout( arr_eval, TYPEOF_bmath_fp_mf3_s_pmt_lqd, ( fp_t )bmath_mf3_s_pmt_lqd );
@@ -101,6 +108,7 @@ int main( void )
     bmath_arr_mf3_eval_s_run_to_stdout( arr_eval, TYPEOF_bmath_fp_mf3_s_pdf_inv, ( fp_t )bmath_mf3_s_pdf_inv );
     bmath_arr_mf3_eval_s_run_to_stdout( arr_eval, TYPEOF_bmath_fp_mf3_s_piv    , ( fp_t )bmath_mf3_s_piv );
     bmath_arr_mf3_eval_s_run_to_stdout( arr_eval, TYPEOF_bmath_fp_mf3_s_hsm_piv, ( fp_t )bmath_mf3_s_hsm_piv );
+*/
 
 //    bmath_arr_mf3_eval_s_run_to_stdout( arr_eval, TYPEOF_bmath_fp_mf3_s_lbd, ( fp_t )bmath_mf3_s_lbd );
 //    bmath_arr_mf3_eval_s_run_to_stdout( arr_eval, TYPEOF_bmath_fp_mf3_s_lbd, ( fp_t )bmath_mf3_s_lbd2 );
@@ -108,7 +116,7 @@ int main( void )
 //    bmath_arr_mf3_eval_s_run_to_stdout( arr_eval, TYPEOF_bmath_fp_mf3_s_trd    , ( fp_t )bmath_mf3_s_trd );
 //    bmath_arr_mf3_eval_s_run_to_stdout( arr_eval, TYPEOF_bmath_fp_mf3_s_evd_htp, ( fp_t )bmath_mf3_s_evd_htp );
 
-    bmath_arr_mf3_eval_s_run_to_stdout( arr_eval, TYPEOF_bmath_fp_mf3_s_svd    , ( fp_t )bmath_mf3_s_svd );
+//    bmath_arr_mf3_eval_s_run_to_stdout( arr_eval, TYPEOF_bmath_fp_mf3_s_svd    , ( fp_t )bmath_mf3_s_svd );
 
 //    st_s_print_d( bcore_spect_status() );
 
