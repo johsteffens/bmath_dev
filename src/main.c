@@ -90,10 +90,10 @@ int main( void )
 //    eval->rows = 10; eval->cols = 10; bmath_arr_mf3_eval_s_push( arr_eval, eval );
 //    eval->rows = 1000; eval->cols = 1000; bmath_arr_mf3_eval_s_push( arr_eval, eval );
 //    eval->rows = 992; eval->cols = 992; bmath_arr_mf3_eval_s_push( arr_eval, eval );
-    eval->rows = 2048; eval->cols = 2048; bmath_arr_mf3_eval_s_push( arr_eval, eval );
+    eval->rows = 1000; eval->cols = 1000; bmath_arr_mf3_eval_s_push( arr_eval, eval );
 
-    bmath_arr_mf3_eval_s_run_to_stdout( arr_eval, TYPEOF_bmath_fp_mf3_s_mul    , ( fp_t )bmath_mf3_s_mul );
     bmath_arr_mf3_eval_s_run_to_stdout( arr_eval, TYPEOF_bmath_fp_mf3_s_mul    , ( fp_t )bmath_mf3_s_mul2 );
+    bmath_arr_mf3_eval_s_run_to_stdout( arr_eval, TYPEOF_bmath_fp_mf3_s_mul    , ( fp_t )bmath_mf3_s_mul );
 /*
 
     bmath_arr_mf3_eval_s_run_to_stdout( arr_eval, TYPEOF_bmath_fp_mf3_s_mul    , ( fp_t )bmath_mf3_s_mul_esp );

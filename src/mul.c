@@ -5,10 +5,16 @@
 #include "mul.h"
 
 //---------------------------------------------------------------------------------------------------------------------
-
+/*
 static const sz_t mul_kernel_o_rows = 4 * 8;
 static const sz_t mul_kernel_o_cols = 4 * 8;
 static const sz_t mul_kernel_m_cols = 4 * 8;
+*/
+
+// we use macros instead of const sz_t because we need them to be const expressions for best compiler optimizations
+#define mul_kernel_o_rows ( 4 * 8 )
+#define mul_kernel_o_cols ( 4 * 8 )
+#define mul_kernel_m_cols ( 4 * 8 )
 
 static void bmath_mf3_s_mul_avx_microkernel_01( const f3_t* o, sz_t o_s, const f3_t* m, sz_t m_s, f3_t* r, sz_t r_s )
 {
@@ -118,14 +124,15 @@ static void bmath_mf3_s_mul_avx_microkernel_02( const f3_t* o, sz_t o_s, const f
     }
 }
 
+// fastest + fairly independent of memory distribution; high stack usage (mul_kernel_o_cols * mul_kernel_m_cols * 8)
 static void bmath_mf3_s_mul_avx_microkernel_03( const f3_t* o, sz_t o_s, const f3_t* m, sz_t m_s, f3_t* r, sz_t r_s )
 {
     assert( mul_kernel_m_cols == 32 );
     __m256d r_p4[ 8 ];
 
-    __m256d m_p4[ 32 ][ 8 ];
+    __m256d m_p4[ mul_kernel_o_cols ][ 8 ];
 
-    for( sz_t j = 0; j < 32; j++ )
+    for( sz_t j = 0; j < mul_kernel_o_cols; j++ )
     {
         const f3_t* mj = m + j * m_s;
         m_p4[ j ][ 0 ] = _mm256_loadu_pd( mj + 0 * 4 );
@@ -177,12 +184,122 @@ static void bmath_mf3_s_mul_avx_microkernel_03( const f3_t* o, sz_t o_s, const f
     }
 }
 
+/// mul: Fixed size AVX-Microkernel
+static void bmath_mf3_s_mul_avx_fix_kernel( const f3_t* o, sz_t o_s, const f3_t* m, sz_t m_s, f3_t* r, sz_t r_s )
+{
+    ASSERT( ( mul_kernel_m_cols & 3 ) == 0 );
+
+    #define mul_kernel_m_c4 ( mul_kernel_m_cols >> 2 )
+
+    __m256d r_p4[ mul_kernel_m_c4   ];
+    __m256d m_p4[ mul_kernel_o_cols ][ mul_kernel_m_c4 ];
+
+    for( sz_t j = 0; j < mul_kernel_o_cols; j++ )
+    {
+        const f3_t* mj = m + j * m_s;
+        for( sz_t k = 0; k < mul_kernel_m_c4; k++ )
+        {
+            m_p4[ j ][ k ] = _mm256_loadu_pd( mj + k * 4 );
+        }
+    }
+
+    for( sz_t i = 0; i < mul_kernel_o_rows; i++ )
+    {
+        const f3_t* oi = o + i * o_s;
+              f3_t* ri = r + i * r_s;
+
+        __m256d o_p4 = _mm256_set1_pd( oi[ 0 ] );
+
+        for( sz_t k = 0; k < mul_kernel_m_c4; k++ )
+        {
+            r_p4[ k ] = _mm256_mul_pd( m_p4[ 0 ][ k ], o_p4 );
+        }
+
+        for( sz_t j = 1; j < mul_kernel_o_cols; j++ )
+        {
+            o_p4 = _mm256_set1_pd( oi[ j ] );
+            for( sz_t k = 0; k < mul_kernel_m_c4; k++ )
+            {
+                #ifdef BMATH_AVX2_FMA
+                    r_p4[ k ] = _mm256_fmadd_pd( m_p4[ j ][ k ], o_p4, r_p4[ k ] );
+                #else
+                    r_p4[ k ] = _mm256_add_pd( _mm256_mul_pd( m_p4[ j ][ k ], o_p4 ), r_p4[ k ] );
+                #endif // BMATH_AVX2_FMA
+            }
+        }
+
+        for( sz_t k = 0; k < mul_kernel_m_c4; k++ )
+        {
+            _mm256_storeu_pd( ri + k * 4, _mm256_add_pd( _mm256_loadu_pd( ri + k * 4 ), r_p4[ k ] ) );
+        }
+    }
+}
+
+/** mul: Flexible AVX-Microkernel
+ *  Allows all combinations o_r, o_c, m_c (including 0)
+ *  provided o_c <= mul_kernel_o_cols && m_c <= mul_kernel_m_c4 * 4
+ */
+static void bmath_mf3_s_mul_avx_flex_kernel( const f3_t* o, sz_t o_s, sz_t o_r, sz_t o_c, const f3_t* m, sz_t m_s, sz_t m_c, f3_t* r, sz_t r_s )
+{
+    #define mul_kernel_m_c4 ( mul_kernel_m_cols >> 2 )
+
+    ASSERT( o_c <= mul_kernel_o_cols );
+    ASSERT( m_c <= mul_kernel_m_c4 * 4 );
+
+    const sz_t m_c4l = m_c >> 2;
+    const sz_t m_cr  = m_c - m_c4l * 4;
+    const sz_t m_c4p = m_cr > 0 ? m_c4l + 1 : m_c4l;
+
+    __m256d r_p4[ mul_kernel_m_c4 ];
+    __m256d m_p4[ mul_kernel_o_cols ][ mul_kernel_m_c4 ];
+
+    for( sz_t j = 0; j < o_c; j++ )
+    {
+        const f3_t* mj = m + j * m_s;
+        for( sz_t k = 0; k < m_c4l; k++ ) m_p4[ j ][ k ] = _mm256_loadu_pd( mj + k * 4 );
+
+        if( m_cr > 0 )
+        {
+            m_p4[ j ][ m_c4l ] = _mm256_set1_pd( 0 );
+            for( sz_t k = 0; k < m_cr;  k++ ) m_p4[ j ][ m_c4l ][ k ] = mj[ m_c4l * 4 + k ];
+        }
+    }
+
+    for( sz_t i = 0; i < o_r; i++ )
+    {
+        const f3_t* oi = o + i * o_s;
+              f3_t* ri = r + i * r_s;
+
+        for( sz_t k = 0; k < m_c4p; k++ ) r_p4[ k ] = _mm256_set1_pd( 0 );
+
+        for( sz_t j = 0; j < o_c; j++ )
+        {
+            __m256d o_p4 = _mm256_set1_pd( oi[ j ] );
+            for( sz_t k = 0; k < m_c4p; k++ )
+            {
+                #ifdef BMATH_AVX2_FMA
+                    r_p4[ k ] = _mm256_fmadd_pd( m_p4[ j ][ k ], o_p4, r_p4[ k ] );
+                #else
+                    r_p4[ k ] = _mm256_add_pd( _mm256_mul_pd( m_p4[ j ][ k ], o_p4 ), r_p4[ k ] );
+                #endif // BMATH_AVX2_FMA
+            }
+        }
+
+        for( sz_t k = 0; k < m_c4l; k++ ) _mm256_storeu_pd( ri + k * 4, _mm256_add_pd( _mm256_loadu_pd( ri + k * 4 ), r_p4[ k ] ) );
+
+        if( m_cr > 0 )
+        {
+            for( sz_t k = 0; k < m_cr; k++ ) ri[ m_c4l * 4 + k ] += r_p4[ m_c4l ][ k ];
+        }
+    }
+}
+
 static void bmath_mf3_s_f3_t_mul( const f3_t* o, sz_t o_s, sz_t o_r, sz_t o_c, const f3_t* m, sz_t m_s, sz_t m_c, f3_t* r, sz_t r_s )
 {
     if( o_r == mul_kernel_o_rows && o_c == mul_kernel_o_cols && m_c == mul_kernel_m_cols )
     {
         #ifdef BMATH_AVX2_FMA
-            bmath_mf3_s_mul_avx_microkernel_03( o, o_s, m, m_s, r, r_s );
+            bmath_mf3_s_mul_avx_fix_kernel( o, o_s, m, m_s, r, r_s );
         #else
             for( sz_t i = 0; i < mul_kernel_o_rows; i++ )
             {
@@ -205,7 +322,7 @@ static void bmath_mf3_s_f3_t_mul( const f3_t* o, sz_t o_s, sz_t o_r, sz_t o_c, c
     if( o_r >= o_c && o_r >= m_c && o_r > mul_kernel_o_rows )
     {
         sz_t mid = ( o_r / ( mul_kernel_o_rows << 1 ) ) * mul_kernel_o_rows;
-        if( mid == 0 ) mid++;
+        mid += ( mid == 0 ) ? 1 : 0;
         bmath_mf3_s_f3_t_mul( o,             o_s,       mid, o_c, m, m_s, m_c,             r, r_s );
         bmath_mf3_s_f3_t_mul( o + mid * o_s, o_s, o_r - mid, o_c, m, m_s, m_c, r + mid * r_s, r_s );
         return;
@@ -214,7 +331,7 @@ static void bmath_mf3_s_f3_t_mul( const f3_t* o, sz_t o_s, sz_t o_r, sz_t o_c, c
     if( o_c >= m_c && o_c > mul_kernel_o_cols )
     {
         sz_t mid = ( o_c / ( mul_kernel_o_cols << 1 ) ) * mul_kernel_o_cols;
-        if( mid == 0 ) mid++;
+        mid += ( mid == 0 ) ? 1 : 0;
         bmath_mf3_s_f3_t_mul( o,       o_s, o_r,       mid, m,             m_s, m_c, r, r_s );
         bmath_mf3_s_f3_t_mul( o + mid, o_s, o_r, o_c - mid, m + mid * m_s, m_s, m_c, r, r_s );
         return;
@@ -223,29 +340,32 @@ static void bmath_mf3_s_f3_t_mul( const f3_t* o, sz_t o_s, sz_t o_r, sz_t o_c, c
     if( m_c > mul_kernel_m_cols )
     {
         sz_t mid = ( m_c / ( mul_kernel_m_cols << 1 ) ) * mul_kernel_m_cols;
-        if( mid == 0 ) mid++;
+        mid += ( mid == 0 ) ? 1 : 0;
         bmath_mf3_s_f3_t_mul( o, o_s, o_r, o_c, m,       m_s,       mid, r,       r_s );
         bmath_mf3_s_f3_t_mul( o, o_s, o_r, o_c, m + mid, m_s, m_c - mid, r + mid, r_s );
         return;
     }
 
     /// smaller blocks
-    for( sz_t i = 0; i < o_r; i++ )
-    {
-        const f3_t* oi = o + i * o_s;
-              f3_t* ri = r + i * r_s;
-        for( sz_t j = 0; j < o_c; j++ )
+    #ifdef BMATH_AVX2_FMA
+        bmath_mf3_s_mul_avx_flex_kernel( o, o_s, o_r, o_c, m, m_s, m_c, r, r_s );
+    #else
+        for( sz_t i = 0; i < o_r; i++ )
         {
-            f3_t f = oi[ j ];
-            const f3_t* mj = m + j * m_s;
-            for( sz_t k = 0; k < m_c; k++ )
+            const f3_t* oi = o + i * o_s;
+                  f3_t* ri = r + i * r_s;
+            for( sz_t j = 0; j < o_c; j++ )
             {
-                ri[ k ] += mj[ k ] * f;
+                f3_t f = oi[ j ];
+                const f3_t* mj = m + j * m_s;
+                for( sz_t k = 0; k < m_c; k++ )
+                {
+                    ri[ k ] += mj[ k ] * f;
+                }
             }
         }
-    }
+    #endif // BMATH_AVX2_FMA
 }
-
 
 void bmath_mf3_s_mul2( const bmath_mf3_s* o, const bmath_mf3_s* m, bmath_mf3_s* r )
 {
