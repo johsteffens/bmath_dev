@@ -4,222 +4,52 @@
 #include "bmath_std.h"
 #include "mul.h"
 
-//---------------------------------------------------------------------------------------------------------------------
-/*
-static const sz_t mul_kernel_o_rows = 4 * 8;
-static const sz_t mul_kernel_o_cols = 4 * 8;
-static const sz_t mul_kernel_m_cols = 4 * 8;
-*/
+//----------------------------------------------------------------------------------------------------------------------
 
 // we use macros instead of const sz_t because we need them to be const expressions for best compiler optimizations
-#define mul_kernel_o_rows ( 4 * 8 )
-#define mul_kernel_o_cols ( 4 * 8 )
-#define mul_kernel_m_cols ( 4 * 8 )
+
+#define BMATH_MUL_HTP_BLOCK_SIZE ( 4 * 8 )
 
 #ifdef BMATH_AVX
-/*static*/ void bmath_mf3_s_mul_avx_microkernel_01( const f3_t* o, sz_t o_s, const f3_t* m, sz_t m_s, f3_t* r, sz_t r_s )
-{
-    assert( mul_kernel_m_cols == 32 );
-    __m256d r_p4[ 8 ];
-    for( sz_t i = 0; i < mul_kernel_o_rows; i++ )
-    {
-        const f3_t* oi = o + i * o_s;
-              f3_t* ri = r + i * r_s;
-
-        r_p4[ 0 ] = _mm256_loadu_pd( ri + 0 * 4 );
-        r_p4[ 1 ] = _mm256_loadu_pd( ri + 1 * 4 );
-        r_p4[ 2 ] = _mm256_loadu_pd( ri + 2 * 4 );
-        r_p4[ 3 ] = _mm256_loadu_pd( ri + 3 * 4 );
-        r_p4[ 4 ] = _mm256_loadu_pd( ri + 4 * 4 );
-        r_p4[ 5 ] = _mm256_loadu_pd( ri + 5 * 4 );
-        r_p4[ 6 ] = _mm256_loadu_pd( ri + 6 * 4 );
-        r_p4[ 7 ] = _mm256_loadu_pd( ri + 7 * 4 );
-
-        for( sz_t j = 0; j < mul_kernel_o_cols; j++ )
-        {
-            __m256d o_p4 = _mm256_set1_pd( oi[ j ] );
-
-            const f3_t* mj = m + j * m_s;
-            r_p4[ 0 ] = _mm256_fmadd_pd( _mm256_loadu_pd( mj + 0 * 4 ), o_p4, r_p4[ 0 ] );
-            r_p4[ 1 ] = _mm256_fmadd_pd( _mm256_loadu_pd( mj + 1 * 4 ), o_p4, r_p4[ 1 ] );
-            r_p4[ 2 ] = _mm256_fmadd_pd( _mm256_loadu_pd( mj + 2 * 4 ), o_p4, r_p4[ 2 ] );
-            r_p4[ 3 ] = _mm256_fmadd_pd( _mm256_loadu_pd( mj + 3 * 4 ), o_p4, r_p4[ 3 ] );
-            r_p4[ 4 ] = _mm256_fmadd_pd( _mm256_loadu_pd( mj + 4 * 4 ), o_p4, r_p4[ 4 ] );
-            r_p4[ 5 ] = _mm256_fmadd_pd( _mm256_loadu_pd( mj + 5 * 4 ), o_p4, r_p4[ 5 ] );
-            r_p4[ 6 ] = _mm256_fmadd_pd( _mm256_loadu_pd( mj + 6 * 4 ), o_p4, r_p4[ 6 ] );
-            r_p4[ 7 ] = _mm256_fmadd_pd( _mm256_loadu_pd( mj + 7 * 4 ), o_p4, r_p4[ 7 ] );
-        }
-
-        _mm256_storeu_pd( ri + 0 * 4, r_p4[ 0 ] );
-        _mm256_storeu_pd( ri + 1 * 4, r_p4[ 1 ] );
-        _mm256_storeu_pd( ri + 2 * 4, r_p4[ 2 ] );
-        _mm256_storeu_pd( ri + 3 * 4, r_p4[ 3 ] );
-        _mm256_storeu_pd( ri + 4 * 4, r_p4[ 4 ] );
-        _mm256_storeu_pd( ri + 5 * 4, r_p4[ 5 ] );
-        _mm256_storeu_pd( ri + 6 * 4, r_p4[ 6 ] );
-        _mm256_storeu_pd( ri + 7 * 4, r_p4[ 7 ] );
-    }
-}
-
-/*static*/ void bmath_mf3_s_mul_avx_microkernel_02( const f3_t* o, sz_t o_s, const f3_t* m, sz_t m_s, f3_t* r, sz_t r_s )
-{
-    assert( mul_kernel_o_rows == 32 );
-    assert( mul_kernel_o_cols == 32 );
-    assert( mul_kernel_m_cols == 32 );
-
-    for( sz_t k = 0; k < mul_kernel_o_cols; k += 4 )
-    {
-
-        for( sz_t i = 0; i < mul_kernel_o_rows; i += 4 )
-        {
-            const f3_t* ob = o + i * o_s + k;
-
-            __m256d o_p4[ 4 ];
-            o_p4[ 0 ] = _mm256_loadu_pd( ob + 0 * o_s );
-            o_p4[ 1 ] = _mm256_loadu_pd( ob + 1 * o_s );
-            o_p4[ 2 ] = _mm256_loadu_pd( ob + 2 * o_s );
-            o_p4[ 3 ] = _mm256_loadu_pd( ob + 3 * o_s );
-
-            for( sz_t j = 0; j < mul_kernel_o_cols; j += 4 )
-            {
-                const f3_t* mb = m + k * m_s + j;
-                      f3_t* rb = r + i * r_s + j;
-
-                __m256d m_p4[ 4 ];
-                m_p4[ 0 ] = _mm256_loadu_pd( mb + 0 * m_s );
-                m_p4[ 1 ] = _mm256_loadu_pd( mb + 1 * m_s );
-                m_p4[ 2 ] = _mm256_loadu_pd( mb + 2 * m_s );
-                m_p4[ 3 ] = _mm256_loadu_pd( mb + 3 * m_s );
-
-                __m256d r_p4;
-
-                r_p4 = _mm256_loadu_pd( rb + 0 * r_s );
-                r_p4 = _mm256_fmadd_pd( m_p4[ 0 ], _mm256_set1_pd( o_p4[ 0 ][ 0 ] ), r_p4 );
-                r_p4 = _mm256_fmadd_pd( m_p4[ 1 ], _mm256_set1_pd( o_p4[ 0 ][ 1 ] ), r_p4 );
-                r_p4 = _mm256_fmadd_pd( m_p4[ 2 ], _mm256_set1_pd( o_p4[ 0 ][ 2 ] ), r_p4 );
-                r_p4 = _mm256_fmadd_pd( m_p4[ 3 ], _mm256_set1_pd( o_p4[ 0 ][ 3 ] ), r_p4 );
-                _mm256_storeu_pd( rb + 0 * r_s, r_p4 );
-
-                r_p4 = _mm256_loadu_pd( rb + 1 * r_s );
-                r_p4 = _mm256_fmadd_pd( m_p4[ 0 ], _mm256_set1_pd( o_p4[ 1 ][ 0 ] ), r_p4 );
-                r_p4 = _mm256_fmadd_pd( m_p4[ 1 ], _mm256_set1_pd( o_p4[ 1 ][ 1 ] ), r_p4 );
-                r_p4 = _mm256_fmadd_pd( m_p4[ 2 ], _mm256_set1_pd( o_p4[ 1 ][ 2 ] ), r_p4 );
-                r_p4 = _mm256_fmadd_pd( m_p4[ 3 ], _mm256_set1_pd( o_p4[ 1 ][ 3 ] ), r_p4 );
-                _mm256_storeu_pd( rb + 1 * r_s, r_p4 );
-
-                r_p4 = _mm256_loadu_pd( rb + 2 * r_s );
-                r_p4 = _mm256_fmadd_pd( m_p4[ 0 ], _mm256_set1_pd( o_p4[ 2 ][ 0 ] ), r_p4 );
-                r_p4 = _mm256_fmadd_pd( m_p4[ 1 ], _mm256_set1_pd( o_p4[ 2 ][ 1 ] ), r_p4 );
-                r_p4 = _mm256_fmadd_pd( m_p4[ 2 ], _mm256_set1_pd( o_p4[ 2 ][ 2 ] ), r_p4 );
-                r_p4 = _mm256_fmadd_pd( m_p4[ 3 ], _mm256_set1_pd( o_p4[ 2 ][ 3 ] ), r_p4 );
-                _mm256_storeu_pd( rb + 2 * r_s, r_p4 );
-
-                r_p4 = _mm256_loadu_pd( rb + 3 * r_s );
-                r_p4 = _mm256_fmadd_pd( m_p4[ 0 ], _mm256_set1_pd( o_p4[ 3 ][ 0 ] ), r_p4 );
-                r_p4 = _mm256_fmadd_pd( m_p4[ 1 ], _mm256_set1_pd( o_p4[ 3 ][ 1 ] ), r_p4 );
-                r_p4 = _mm256_fmadd_pd( m_p4[ 2 ], _mm256_set1_pd( o_p4[ 3 ][ 2 ] ), r_p4 );
-                r_p4 = _mm256_fmadd_pd( m_p4[ 3 ], _mm256_set1_pd( o_p4[ 3 ][ 3 ] ), r_p4 );
-                _mm256_storeu_pd( rb + 3 * r_s, r_p4 );
-            }
-        }
-    }
-}
-
-// fastest + fairly independent of memory distribution; high stack usage (mul_kernel_o_cols * mul_kernel_m_cols * 8)
-/*static*/ void bmath_mf3_s_mul_avx_microkernel_03( const f3_t* o, sz_t o_s, const f3_t* m, sz_t m_s, f3_t* r, sz_t r_s )
-{
-    assert( mul_kernel_m_cols == 32 );
-    __m256d r_p4[ 8 ];
-
-    __m256d m_p4[ mul_kernel_o_cols ][ 8 ];
-
-    for( sz_t j = 0; j < mul_kernel_o_cols; j++ )
-    {
-        const f3_t* mj = m + j * m_s;
-        m_p4[ j ][ 0 ] = _mm256_loadu_pd( mj + 0 * 4 );
-        m_p4[ j ][ 1 ] = _mm256_loadu_pd( mj + 1 * 4 );
-        m_p4[ j ][ 2 ] = _mm256_loadu_pd( mj + 2 * 4 );
-        m_p4[ j ][ 3 ] = _mm256_loadu_pd( mj + 3 * 4 );
-        m_p4[ j ][ 4 ] = _mm256_loadu_pd( mj + 4 * 4 );
-        m_p4[ j ][ 5 ] = _mm256_loadu_pd( mj + 5 * 4 );
-        m_p4[ j ][ 6 ] = _mm256_loadu_pd( mj + 6 * 4 );
-        m_p4[ j ][ 7 ] = _mm256_loadu_pd( mj + 7 * 4 );
-    }
-
-    for( sz_t i = 0; i < mul_kernel_o_rows; i++ )
-    {
-        const f3_t* oi = o + i * o_s;
-              f3_t* ri = r + i * r_s;
-
-        __m256d o_p4 = _mm256_set1_pd( oi[ 0 ] );
-        r_p4[ 0 ] = _mm256_mul_pd( m_p4[ 0 ][ 0 ], o_p4 );
-        r_p4[ 1 ] = _mm256_mul_pd( m_p4[ 0 ][ 1 ], o_p4 );
-        r_p4[ 2 ] = _mm256_mul_pd( m_p4[ 0 ][ 2 ], o_p4 );
-        r_p4[ 3 ] = _mm256_mul_pd( m_p4[ 0 ][ 3 ], o_p4 );
-        r_p4[ 4 ] = _mm256_mul_pd( m_p4[ 0 ][ 4 ], o_p4 );
-        r_p4[ 5 ] = _mm256_mul_pd( m_p4[ 0 ][ 5 ], o_p4 );
-        r_p4[ 6 ] = _mm256_mul_pd( m_p4[ 0 ][ 6 ], o_p4 );
-        r_p4[ 7 ] = _mm256_mul_pd( m_p4[ 0 ][ 7 ], o_p4 );
-
-        for( sz_t j = 1; j < mul_kernel_o_cols; j++ )
-        {
-            o_p4 = _mm256_set1_pd( oi[ j ] );
-            r_p4[ 0 ] = _mm256_fmadd_pd( m_p4[ j ][ 0 ], o_p4, r_p4[ 0 ] );
-            r_p4[ 1 ] = _mm256_fmadd_pd( m_p4[ j ][ 1 ], o_p4, r_p4[ 1 ] );
-            r_p4[ 2 ] = _mm256_fmadd_pd( m_p4[ j ][ 2 ], o_p4, r_p4[ 2 ] );
-            r_p4[ 3 ] = _mm256_fmadd_pd( m_p4[ j ][ 3 ], o_p4, r_p4[ 3 ] );
-            r_p4[ 4 ] = _mm256_fmadd_pd( m_p4[ j ][ 4 ], o_p4, r_p4[ 4 ] );
-            r_p4[ 5 ] = _mm256_fmadd_pd( m_p4[ j ][ 5 ], o_p4, r_p4[ 5 ] );
-            r_p4[ 6 ] = _mm256_fmadd_pd( m_p4[ j ][ 6 ], o_p4, r_p4[ 6 ] );
-            r_p4[ 7 ] = _mm256_fmadd_pd( m_p4[ j ][ 7 ], o_p4, r_p4[ 7 ] );
-        }
-
-        _mm256_storeu_pd( ri + 0 * 4, _mm256_add_pd( _mm256_loadu_pd( ri + 0 * 4 ), r_p4[ 0 ] ) );
-        _mm256_storeu_pd( ri + 1 * 4, _mm256_add_pd( _mm256_loadu_pd( ri + 1 * 4 ), r_p4[ 1 ] ) );
-        _mm256_storeu_pd( ri + 2 * 4, _mm256_add_pd( _mm256_loadu_pd( ri + 2 * 4 ), r_p4[ 2 ] ) );
-        _mm256_storeu_pd( ri + 3 * 4, _mm256_add_pd( _mm256_loadu_pd( ri + 3 * 4 ), r_p4[ 3 ] ) );
-        _mm256_storeu_pd( ri + 4 * 4, _mm256_add_pd( _mm256_loadu_pd( ri + 4 * 4 ), r_p4[ 4 ] ) );
-        _mm256_storeu_pd( ri + 5 * 4, _mm256_add_pd( _mm256_loadu_pd( ri + 5 * 4 ), r_p4[ 5 ] ) );
-        _mm256_storeu_pd( ri + 6 * 4, _mm256_add_pd( _mm256_loadu_pd( ri + 6 * 4 ), r_p4[ 6 ] ) );
-        _mm256_storeu_pd( ri + 7 * 4, _mm256_add_pd( _mm256_loadu_pd( ri + 7 * 4 ), r_p4[ 7 ] ) );
-    }
-}
 
 /// mul: Fixed size AVX-Microkernel
-static void bmath_mf3_s_mul_avx_fix_kernel( const f3_t* o, sz_t o_s, const f3_t* m, sz_t m_s, f3_t* r, sz_t r_s )
+static void bmath_mf3_s_mul_htp_avx_fix_kernel( const f3_t* o, sz_t o_s, const f3_t* m, sz_t m_s, f3_t* r, sz_t r_s )
 {
-    ASSERT( ( mul_kernel_m_cols & 3 ) == 0 );
+    ASSERT( ( BMATH_MUL_HTP_BLOCK_SIZE & 3 ) == 0 );
 
-    #define mul_kernel_m_c4 ( mul_kernel_m_cols >> 2 )
+    #define BMATH_MUL_HTP_BLOCK_SIZE4 ( BMATH_MUL_HTP_BLOCK_SIZE >> 2 )
 
-    __m256d r_p4[ mul_kernel_m_c4   ];
-    __m256d m_p4[ mul_kernel_o_cols ][ mul_kernel_m_c4 ];
+    __m256d r_p4[ BMATH_MUL_HTP_BLOCK_SIZE4 ];
+    __m256d m_p4[ BMATH_MUL_HTP_BLOCK_SIZE ][ BMATH_MUL_HTP_BLOCK_SIZE4 ];
 
-    for( sz_t j = 0; j < mul_kernel_o_cols; j++ )
+    for( sz_t j = 0; j < BMATH_MUL_HTP_BLOCK_SIZE; j++ )
     {
-        const f3_t* mj = m + j * m_s;
-        for( sz_t k = 0; k < mul_kernel_m_c4; k++ )
+        const f3_t* mj = m + j;
+        for( sz_t k = 0; k < BMATH_MUL_HTP_BLOCK_SIZE4; k++ )
         {
-            m_p4[ j ][ k ] = _mm256_loadu_pd( mj + k * 4 );
+            m_p4[ j ][ k ][ 0 ] = mj[ ( k * 4 + 0 ) * m_s ];
+            m_p4[ j ][ k ][ 1 ] = mj[ ( k * 4 + 1 ) * m_s ];
+            m_p4[ j ][ k ][ 2 ] = mj[ ( k * 4 + 2 ) * m_s ];
+            m_p4[ j ][ k ][ 3 ] = mj[ ( k * 4 + 3 ) * m_s ];
         }
     }
 
-    for( sz_t i = 0; i < mul_kernel_o_rows; i++ )
+    for( sz_t i = 0; i < BMATH_MUL_HTP_BLOCK_SIZE; i++ )
     {
         const f3_t* oi = o + i * o_s;
               f3_t* ri = r + i * r_s;
 
         __m256d o_p4 = _mm256_set1_pd( oi[ 0 ] );
 
-        for( sz_t k = 0; k < mul_kernel_m_c4; k++ )
+        for( sz_t k = 0; k < BMATH_MUL_HTP_BLOCK_SIZE4; k++ )
         {
             r_p4[ k ] = _mm256_mul_pd( m_p4[ 0 ][ k ], o_p4 );
         }
 
-        for( sz_t j = 1; j < mul_kernel_o_cols; j++ )
+        for( sz_t j = 1; j < BMATH_MUL_HTP_BLOCK_SIZE; j++ )
         {
             o_p4 = _mm256_set1_pd( oi[ j ] );
-            for( sz_t k = 0; k < mul_kernel_m_c4; k++ )
+            for( sz_t k = 0; k < BMATH_MUL_HTP_BLOCK_SIZE4; k++ )
             {
                 #ifdef BMATH_AVX2_FMA
                     r_p4[ k ] = _mm256_fmadd_pd( m_p4[ j ][ k ], o_p4, r_p4[ k ] );
@@ -229,40 +59,48 @@ static void bmath_mf3_s_mul_avx_fix_kernel( const f3_t* o, sz_t o_s, const f3_t*
             }
         }
 
-        for( sz_t k = 0; k < mul_kernel_m_c4; k++ )
+        for( sz_t k = 0; k < BMATH_MUL_HTP_BLOCK_SIZE4; k++ )
         {
             _mm256_storeu_pd( ri + k * 4, _mm256_add_pd( _mm256_loadu_pd( ri + k * 4 ), r_p4[ k ] ) );
         }
     }
 }
 
+//----------------------------------------------------------------------------------------------------------------------
+
 /** mul: Flexible AVX-Microkernel
- *  Allows all combinations o_r, o_c, m_c (including 0)
- *  provided o_c <= mul_kernel_o_cols && m_c <= mul_kernel_m_c4 * 4
+ *  Allows all combinations o_r, o_c, m_r (including 0)
+ *  provided o_c <= BMATH_MUL_HTP_BLOCK_SIZE && m_r <= BMATH_MUL_HTP_BLOCK_SIZE4 * 4
  */
-static void bmath_mf3_s_mul_avx_flex_kernel( const f3_t* o, sz_t o_s, sz_t o_r, sz_t o_c, const f3_t* m, sz_t m_s, sz_t m_c, f3_t* r, sz_t r_s )
+static void bmath_mf3_s_mul_htp_avx_flex_kernel( const f3_t* o, sz_t o_s, sz_t o_r, sz_t o_c, const f3_t* m, sz_t m_s, sz_t m_r, f3_t* r, sz_t r_s )
 {
-    #define mul_kernel_m_c4 ( mul_kernel_m_cols >> 2 )
+    #define BMATH_MUL_HTP_BLOCK_SIZE4 ( BMATH_MUL_HTP_BLOCK_SIZE >> 2 )
 
-    ASSERT( o_c <= mul_kernel_o_cols );
-    ASSERT( m_c <= mul_kernel_m_c4 * 4 );
+    ASSERT( o_c <= BMATH_MUL_HTP_BLOCK_SIZE );
+    ASSERT( m_r <= BMATH_MUL_HTP_BLOCK_SIZE4 * 4 );
 
-    const sz_t m_c4l = m_c >> 2;
-    const sz_t m_cr  = m_c - m_c4l * 4;
-    const sz_t m_c4p = m_cr > 0 ? m_c4l + 1 : m_c4l;
+    const sz_t m_r4l = m_r >> 2;
+    const sz_t m_rr  = m_r - m_r4l * 4;
+    const sz_t m_r4p = m_rr > 0 ? m_r4l + 1 : m_r4l;
 
-    __m256d r_p4[ mul_kernel_m_c4 ];
-    __m256d m_p4[ mul_kernel_o_cols ][ mul_kernel_m_c4 ];
+    __m256d r_p4[ BMATH_MUL_HTP_BLOCK_SIZE4 ];
+    __m256d m_p4[ BMATH_MUL_HTP_BLOCK_SIZE ][ BMATH_MUL_HTP_BLOCK_SIZE4 ];
 
     for( sz_t j = 0; j < o_c; j++ )
     {
-        const f3_t* mj = m + j * m_s;
-        for( sz_t k = 0; k < m_c4l; k++ ) m_p4[ j ][ k ] = _mm256_loadu_pd( mj + k * 4 );
-
-        if( m_cr > 0 )
+        const f3_t* mj = m + j;
+        for( sz_t k = 0; k < m_r4l; k++ )
         {
-            m_p4[ j ][ m_c4l ] = _mm256_set1_pd( 0 );
-            for( sz_t k = 0; k < m_cr;  k++ ) m_p4[ j ][ m_c4l ][ k ] = mj[ m_c4l * 4 + k ];
+            m_p4[ j ][ k ][ 0 ] = mj[ ( k * 4 + 0 ) * m_s ];
+            m_p4[ j ][ k ][ 1 ] = mj[ ( k * 4 + 1 ) * m_s ];
+            m_p4[ j ][ k ][ 2 ] = mj[ ( k * 4 + 2 ) * m_s ];
+            m_p4[ j ][ k ][ 3 ] = mj[ ( k * 4 + 3 ) * m_s ];
+        }
+
+        if( m_rr > 0 )
+        {
+            m_p4[ j ][ m_r4l ] = _mm256_set1_pd( 0 );
+            for( sz_t k = 0; k < m_rr;  k++ ) m_p4[ j ][ m_r4l ][ k ] = mj[ ( m_r4l * 4 + k ) * m_s ];
         }
     }
 
@@ -271,12 +109,12 @@ static void bmath_mf3_s_mul_avx_flex_kernel( const f3_t* o, sz_t o_s, sz_t o_r, 
         const f3_t* oi = o + i * o_s;
               f3_t* ri = r + i * r_s;
 
-        for( sz_t k = 0; k < m_c4p; k++ ) r_p4[ k ] = _mm256_set1_pd( 0 );
+        for( sz_t k = 0; k < m_r4p; k++ ) r_p4[ k ] = _mm256_set1_pd( 0 );
 
         for( sz_t j = 0; j < o_c; j++ )
         {
             __m256d o_p4 = _mm256_set1_pd( oi[ j ] );
-            for( sz_t k = 0; k < m_c4p; k++ )
+            for( sz_t k = 0; k < m_r4p; k++ )
             {
                 #ifdef BMATH_AVX2_FMA
                     r_p4[ k ] = _mm256_fmadd_pd( m_p4[ j ][ k ], o_p4, r_p4[ k ] );
@@ -286,132 +124,147 @@ static void bmath_mf3_s_mul_avx_flex_kernel( const f3_t* o, sz_t o_s, sz_t o_r, 
             }
         }
 
-        for( sz_t k = 0; k < m_c4l; k++ ) _mm256_storeu_pd( ri + k * 4, _mm256_add_pd( _mm256_loadu_pd( ri + k * 4 ), r_p4[ k ] ) );
+        for( sz_t k = 0; k < m_r4l; k++ ) _mm256_storeu_pd( ri + k * 4, _mm256_add_pd( _mm256_loadu_pd( ri + k * 4 ), r_p4[ k ] ) );
 
-        if( m_cr > 0 )
+        if( m_rr > 0 )
         {
-            for( sz_t k = 0; k < m_cr; k++ ) ri[ m_c4l * 4 + k ] += r_p4[ m_c4l ][ k ];
+            for( sz_t k = 0; k < m_rr; k++ ) ri[ m_r4l * 4 + k ] += r_p4[ m_r4l ][ k ];
         }
     }
 }
 #endif // BMATH_AVX
 
-static void bmath_mf3_s_mul_fix_kernel( const f3_t* o, sz_t o_s, const f3_t* m, sz_t m_s, f3_t* r, sz_t r_s )
+//----------------------------------------------------------------------------------------------------------------------
+
+static void bmath_mf3_s_f3_t_mul_htp( const f3_t* o, sz_t o_s, sz_t o_r, sz_t o_c, const f3_t* m, sz_t m_s, sz_t m_r, f3_t* r, sz_t r_s, bl_t sym )
 {
-    #ifdef BMATH_AVX
-        bmath_mf3_s_mul_avx_fix_kernel( o, o_s, m, m_s, r, r_s );
-    #else
+    if( o_r == BMATH_MUL_HTP_BLOCK_SIZE && o_c == BMATH_MUL_HTP_BLOCK_SIZE && m_r == BMATH_MUL_HTP_BLOCK_SIZE )
+    {
+        #ifdef BMATH_AVX
+            bmath_mf3_s_mul_htp_avx_fix_kernel( o, o_s, m, m_s, r, r_s );
+        #else
 
-        f3_t r_buf[ mul_kernel_m_cols ];
-        for( sz_t i = 0; i < mul_kernel_o_rows; i++ )
-        {
-            const f3_t* oi = o + i * o_s;
-
-            for( sz_t k = 0; k < mul_kernel_m_cols; k++ ) r_buf[ k ] = 0;
-
-            for( sz_t j = 0; j < mul_kernel_o_cols; j++ )
+            f3_t r_buf[ BMATH_MUL_HTP_BLOCK_SIZE ];
+            for( sz_t i = 0; i < BMATH_MUL_HTP_BLOCK_SIZE; i++ )
             {
-                const f3_t* mj = m + j * m_s;
-                f3_t f = oi[ j ];
-                for( sz_t k = 0; k < mul_kernel_m_cols; k++ )
+                const f3_t* oi = o + i * o_s;
+
+                for( sz_t k = 0; k < BMATH_MUL_HTP_BLOCK_SIZE; k++ ) r_buf[ k ] = 0;
+
+                for( sz_t j = 0; j < BMATH_MUL_HTP_BLOCK_SIZE; j++ )
                 {
-                    r_buf[ k ] += mj[ k ] * f;
+                    const f3_t* mj = m + j;
+                    f3_t f = oi[ j ];
+                    for( sz_t k = 0; k < BMATH_MUL_HTP_BLOCK_SIZE; k++ )
+                    {
+                        r_buf[ k ] += mj[ k * m_s ] * f;
+                    }
                 }
+
+                f3_t* ri = r + i * r_s;
+                for( sz_t k = 0; k < BMATH_MUL_HTP_BLOCK_SIZE; k++ ) ri[ k ] += r_buf[ k ];
             }
+        #endif // BMATH_AVX2_FMA
 
-            f3_t* ri = r + i * r_s;
-            for( sz_t k = 0; k < mul_kernel_m_cols; k++ ) ri[ k ] += r_buf[ k ];
-        }
-    #endif // BMATH_AVX2_FMA
-}
+        return;
+    }
 
-static void bmath_mf3_s_mul_flex_kernel( const f3_t* o, sz_t o_s, sz_t o_r, sz_t o_c, const f3_t* m, sz_t m_s, sz_t m_c, f3_t* r, sz_t r_s )
-{
-    #ifdef BMATH_AVX
-        bmath_mf3_s_mul_avx_flex_kernel( o, o_s, o_r, o_c, m, m_s, m_c, r, r_s );
-    #else
-        f3_t r_buf[ mul_kernel_m_cols ];
-        for( sz_t i = 0; i < o_r; i++ )
+    if( o_r >= o_c && o_r >= m_r && o_r > BMATH_MUL_HTP_BLOCK_SIZE )
+    {
+        sz_t mid = ( o_r / ( BMATH_MUL_HTP_BLOCK_SIZE << 1 ) ) * BMATH_MUL_HTP_BLOCK_SIZE;
+        mid += ( mid == 0 ) ? 1 : 0;
+        bmath_mf3_s_f3_t_mul_htp( o,             o_s,       mid, o_c, m, m_s, m_r,             r, r_s, sym );
+        bmath_mf3_s_f3_t_mul_htp( o + mid * o_s, o_s, o_r - mid, o_c, m, m_s, m_r, r + mid * r_s, r_s, sym );
+        return;
+    }
+
+    if( o_c >= m_r && o_c > BMATH_MUL_HTP_BLOCK_SIZE )
+    {
+        sz_t mid = ( o_c / ( BMATH_MUL_HTP_BLOCK_SIZE << 1 ) ) * BMATH_MUL_HTP_BLOCK_SIZE;
+        mid += ( mid == 0 ) ? 1 : 0;
+        bmath_mf3_s_f3_t_mul_htp( o,       o_s, o_r,       mid, m,       m_s, m_r, r, r_s, sym );
+        bmath_mf3_s_f3_t_mul_htp( o + mid, o_s, o_r, o_c - mid, m + mid, m_s, m_r, r, r_s, sym );
+        return;
+    }
+
+    if( m_r > BMATH_MUL_HTP_BLOCK_SIZE )
+    {
+        sz_t mid = ( m_r / ( BMATH_MUL_HTP_BLOCK_SIZE << 1 ) ) * BMATH_MUL_HTP_BLOCK_SIZE;
+        mid += ( mid == 0 ) ? 1 : 0;
+        bmath_mf3_s_f3_t_mul_htp( o, o_s, o_r, o_c, m, m_s, mid, r, r_s, sym );
+
+        if( !sym || o != m ) // in case of symmetry skip upper triangle of r
         {
-            const f3_t* oi = o + i * o_s;
-
-            for( sz_t k = 0; k < m_c; k++ ) r_buf[ k ] = 0;
-
-            for( sz_t j = 0; j < o_c; j++ )
-            {
-                f3_t f = oi[ j ];
-                const f3_t* mj = m + j * m_s;
-                for( sz_t k = 0; k < m_c; k++ )
-                {
-                    r_buf[ k ] += mj[ k ] * f;
-                }
-            }
-
-            f3_t* ri = r + i * r_s;
-            for( sz_t k = 0; k < m_c; k++ ) ri[ k ] += r_buf[ k ];
+            bmath_mf3_s_f3_t_mul_htp( o, o_s, o_r, o_c, m + mid * m_s, m_s, m_r - mid, r + mid, r_s, sym );
         }
-    #endif // BMATH_AVX2_FMA
-}
-
-static void bmath_mf3_s_f3_t_mul( const f3_t* o, sz_t o_s, sz_t o_r, sz_t o_c, const f3_t* m, sz_t m_s, sz_t m_c, f3_t* r, sz_t r_s )
-{
-    if( o_r == mul_kernel_o_rows && o_c == mul_kernel_o_cols && m_c == mul_kernel_m_cols )
-    {
-        bmath_mf3_s_mul_fix_kernel( o, o_s, m, m_s, r, r_s );
-        return;
-    }
-
-    if( o_r >= o_c && o_r >= m_c && o_r > mul_kernel_o_rows )
-    {
-        sz_t mid = ( o_r / ( mul_kernel_o_rows << 1 ) ) * mul_kernel_o_rows;
-        mid += ( mid == 0 ) ? 1 : 0;
-        bmath_mf3_s_f3_t_mul( o,             o_s,       mid, o_c, m, m_s, m_c,             r, r_s );
-        bmath_mf3_s_f3_t_mul( o + mid * o_s, o_s, o_r - mid, o_c, m, m_s, m_c, r + mid * r_s, r_s );
-        return;
-    }
-
-    if( o_c >= m_c && o_c > mul_kernel_o_cols )
-    {
-        sz_t mid = ( o_c / ( mul_kernel_o_cols << 1 ) ) * mul_kernel_o_cols;
-        mid += ( mid == 0 ) ? 1 : 0;
-        bmath_mf3_s_f3_t_mul( o,       o_s, o_r,       mid, m,             m_s, m_c, r, r_s );
-        bmath_mf3_s_f3_t_mul( o + mid, o_s, o_r, o_c - mid, m + mid * m_s, m_s, m_c, r, r_s );
-        return;
-    }
-
-    if( m_c > mul_kernel_m_cols )
-    {
-        sz_t mid = ( m_c / ( mul_kernel_m_cols << 1 ) ) * mul_kernel_m_cols;
-        mid += ( mid == 0 ) ? 1 : 0;
-        bmath_mf3_s_f3_t_mul( o, o_s, o_r, o_c, m,       m_s,       mid, r,       r_s );
-        bmath_mf3_s_f3_t_mul( o, o_s, o_r, o_c, m + mid, m_s, m_c - mid, r + mid, r_s );
         return;
     }
 
     /// smaller blocks
-    bmath_mf3_s_mul_flex_kernel( o, o_s, o_r, o_c, m, m_s, m_c, r, r_s );
+    #ifdef BMATH_AVX
+        bmath_mf3_s_mul_htp_avx_flex_kernel( o, o_s, o_r, o_c, m, m_s, m_r, r, r_s );
+    #else
+        f3_t r_buf[ BMATH_MUL_HTP_BLOCK_SIZE ];
+        for( sz_t i = 0; i < o_r; i++ )
+        {
+            const f3_t* oi = o + i * o_s;
+
+            for( sz_t k = 0; k < m_r; k++ ) r_buf[ k ] = 0;
+
+            for( sz_t j = 0; j < o_c; j++ )
+            {
+                f3_t f = oi[ j ];
+                const f3_t* mj = m + j;
+                for( sz_t k = 0; k < m_r; k++ )
+                {
+                    r_buf[ k ] += mj[ k * m_s ] * f;
+                }
+            }
+
+            f3_t* ri = r + i * r_s;
+            for( sz_t k = 0; k < m_r; k++ ) ri[ k ] += r_buf[ k ];
+        }
+    #endif // BMATH_AVX2_FMA
 }
 
-void bmath_mf3_s_mul2( const bmath_mf3_s* o, const bmath_mf3_s* m, bmath_mf3_s* r )
+//----------------------------------------------------------------------------------------------------------------------
+
+void bmath_mf3_s_mul_htp2( const bmath_mf3_s* o, const bmath_mf3_s* m, bmath_mf3_s* r )
 {
     if( r == o || r == m )
     {
         bmath_mf3_s* buf = bmath_mf3_s_create();
         bmath_mf3_s_set_size( buf, r->rows, r->cols );
-        bmath_mf3_s_mul2( o, m, buf );
+        bmath_mf3_s_mul_htp2( o, m, buf );
         bmath_mf3_s_cpy( buf, r );
         bmath_mf3_s_discard( buf );
         return;
     }
 
-    ASSERT( o->cols == m->rows );
+    ASSERT( o->cols == m->cols );
     ASSERT( o->rows == r->rows );
-    ASSERT( m->cols == r->cols );
+    ASSERT( m->rows == r->cols );
 
     bmath_mf3_s_zro( r );
 
-    bmath_mf3_s_f3_t_mul( o->data, o->stride, o->rows, o->cols, m->data, m->stride, m->cols, r->data, r->stride );
+    bl_t symmetry = ( o == m );
+
+    bmath_mf3_s_f3_t_mul_htp( o->data, o->stride, o->rows, o->cols, m->data, m->stride, m->rows, r->data, r->stride, symmetry );
+
+    if( symmetry )
+    {
+        for( sz_t i = 0; i < r->rows; i++ )
+        {
+            for( sz_t j = 0; j < i; j++ )
+            {
+                r->data[ j * r->stride + i ] = r->data[ i * r->stride + j ];
+            }
+        }
+    }
+
 }
 
-//---------------------------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 
+
+//----------------------------------------------------------------------------------------------------------------------
