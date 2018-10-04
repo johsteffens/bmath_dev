@@ -24,7 +24,7 @@ void bmath_mf3_s_decompose_lbd5( bmath_mf3_s* u, bmath_mf3_s* a, bmath_mf3_s* v 
 
 /// older code
 bl_t bmath_mf3_s_svd_full( bmath_mf3_s* u, bmath_mf3_s* a, bmath_mf3_s* v );
-bl_t bmath_mf3_s_svd2(  bmath_mf3_s* u, bmath_mf3_s* a, bmath_mf3_s* v );
+bl_t bmath_mf3_s_svd2( bmath_mf3_s* u, bmath_mf3_s* a, bmath_mf3_s* v );
 
 
 #endif  // SVD_H
