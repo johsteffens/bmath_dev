@@ -6,6 +6,8 @@
 #include "bmath_std.h"
 #include "bmath_mf3.h"
 
-void bmath_mf3_s_mul_htp2( const bmath_mf3_s* o, const bmath_mf3_s* op, bmath_mf3_s* res );
+void bmath_mf3_s_mul_htp2( const bmath_mf3_s* o, const bmath_mf3_s* m, bmath_mf3_s* r );
+
+void bmath_mf3_s_htp_mul2( const bmath_mf3_s* o, const bmath_mf3_s* m, bmath_mf3_s* r );
 
 #endif  // QRD_H

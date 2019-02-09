@@ -8,7 +8,7 @@
 
 // plain qr of a square nxn matrix a = q^T * a' with q, a indexed
 // q must be externally initialized
-static void bmath_plain_htp_qrd_xqa( const sz_t* m_x, f3_t* q, sz_t q_s, f3_t* a, sz_t a_s, sz_t n )
+void bmath_plain_htp_qrd_xqa( const sz_t* m_x, f3_t* q, sz_t q_s, f3_t* a, sz_t a_s, sz_t n )
 {
     if( n <= 1 ) return; // nothing else to do
 
