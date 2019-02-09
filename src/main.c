@@ -85,7 +85,7 @@ int main( void )
     st_s_push_sc( &eval->a_img_file, "/home/johannes/temp/a_img.pnm" );
     st_s_push_sc( &eval->u_img_file, "/home/johannes/temp/u_img.pnm" );
 //    st_s_push_sc( &eval->v_img_file, "/home/johannes/temp/v_img.pnm" );
-    eval->test0 = false;
+    eval->test0 = true;
     eval->test1 = true;
 
     eval->assert_all = true;
@@ -105,11 +105,9 @@ int main( void )
 //    bmath_arr_mf3_eval_s_run_to_stdout( arr_eval, TYPEOF_bmath_fp_mf3_s_mul    , ( fp_t )bmath_mf3_s_morder_mul );
 //    bmath_arr_mf3_eval_s_run_to_stdout( arr_eval, TYPEOF_bmath_fp_mf3_s_mul    , ( fp_t )bmath_mf3_s_zorder_mul );
 
-    bmath_arr_mf3_eval_s_run_to_stdout( arr_eval, TYPEOF_bmath_fp_mf3_s_htp_mul, ( fp_t )bmath_mf3_s_htp_mul );
-    bmath_arr_mf3_eval_s_run_to_stdout( arr_eval, TYPEOF_bmath_fp_mf3_s_htp_mul, ( fp_t )bmath_mf3_s_htp_mul2 );
-
     bmath_arr_mf3_eval_s_run_to_stdout( arr_eval, TYPEOF_bmath_fp_mf3_s_mul,     ( fp_t )bmath_mf3_s_mul );
     bmath_arr_mf3_eval_s_run_to_stdout( arr_eval, TYPEOF_bmath_fp_mf3_s_mul_htp, ( fp_t )bmath_mf3_s_mul_htp );
+    bmath_arr_mf3_eval_s_run_to_stdout( arr_eval, TYPEOF_bmath_fp_mf3_s_htp_mul, ( fp_t )bmath_mf3_s_htp_mul );
 
 
 //    bmath_arr_mf3_eval_s_run_to_stdout( arr_eval, TYPEOF_bmath_fp_mf3_s_qrd    , ( fp_t )bmath_mf3_s_qrd );
