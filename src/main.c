@@ -8,6 +8,7 @@
 #include "svd.h"
 #include "mul.h"
 #include "qrd.h"
+#include "cnn.h"
 #include "zorder.h"
 
 void randomizer( void )
@@ -71,6 +72,9 @@ int main( void )
     bcore_run_signal_selftest( typeof( "bmath_pmt" ), NULL );
     bcore_run_signal_selftest( typeof( "bmath_simd" ), NULL );
 
+    //cnn_selftest();
+    return 0;
+
     BCORE_LIFE_INIT();
     BCORE_LIFE_CREATE( bmath_mf3_eval_s, eval );
     BCORE_LIFE_CREATE( bmath_arr_mf3_eval_s, arr_eval );
@@ -108,7 +112,6 @@ int main( void )
     bmath_arr_mf3_eval_s_run_to_stdout( arr_eval, TYPEOF_bmath_fp_mf3_s_mul,     ( fp_t )bmath_mf3_s_mul );
     bmath_arr_mf3_eval_s_run_to_stdout( arr_eval, TYPEOF_bmath_fp_mf3_s_mul_htp, ( fp_t )bmath_mf3_s_mul_htp );
     bmath_arr_mf3_eval_s_run_to_stdout( arr_eval, TYPEOF_bmath_fp_mf3_s_htp_mul, ( fp_t )bmath_mf3_s_htp_mul );
-
 
 //    bmath_arr_mf3_eval_s_run_to_stdout( arr_eval, TYPEOF_bmath_fp_mf3_s_qrd    , ( fp_t )bmath_mf3_s_qrd );
 //    bmath_arr_mf3_eval_s_run_to_stdout( arr_eval, TYPEOF_bmath_fp_mf3_s_qrd    , ( fp_t )bmath_mf3_s_qrd2 );
