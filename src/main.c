@@ -72,14 +72,14 @@ int main( void )
     bcore_run_signal_selftest( typeof( "bmath_pmt" ), NULL );
     bcore_run_signal_selftest( typeof( "bmath_simd" ), NULL );
 
-    //cnn_selftest();
+    bmath_hwflags_to_stdout();
+    cnn_selftest();
     return 0;
 
     BCORE_LIFE_INIT();
     BCORE_LIFE_CREATE( bmath_mf3_eval_s, eval );
     BCORE_LIFE_CREATE( bmath_arr_mf3_eval_s, arr_eval );
 
-    bmath_hwflags_to_stdout();
 
     eval->density = 1;
     eval->full  = false;
