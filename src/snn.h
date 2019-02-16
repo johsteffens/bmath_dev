@@ -1,13 +1,13 @@
 /// Author & Copyright (C) 2018 Johannes Bernhard Steffens. All rights reserved.
 
-#ifndef CNN_H
-#define CNN_H
+#ifndef SNN_H
+#define SNN_H
 
 #include "bmath_std.h"
 #include "bmath_mf3.h"
-#include "bmath_cnn.h"
+#include "bmath_snn.h"
 
-void cnn_selftest1();
-void cnn_selftest2();
+void snn_selftest1();
+void snn_selftest2();
 
-#endif  // CNN_H
+#endif  // SNN_H

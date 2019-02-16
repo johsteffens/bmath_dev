@@ -9,6 +9,7 @@
 #include "mul.h"
 #include "qrd.h"
 #include "cnn.h"
+#include "snn.h"
 #include "zorder.h"
 
 void randomizer( void )
@@ -73,13 +74,14 @@ int main( void )
     bcore_run_signal_selftest( typeof( "bmath_simd" ), NULL );
 
     bmath_hwflags_to_stdout();
-    cnn_selftest();
+//    snn_selftest();
+    snn_selftest1();
+    snn_selftest2();
     return 0;
 
     BCORE_LIFE_INIT();
     BCORE_LIFE_CREATE( bmath_mf3_eval_s, eval );
     BCORE_LIFE_CREATE( bmath_arr_mf3_eval_s, arr_eval );
-
 
     eval->density = 1;
     eval->full  = false;
