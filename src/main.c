@@ -7,78 +7,14 @@
 
 #include "svd.h"
 #include "mul.h"
+#include "smul.h"
 #include "qrd.h"
 #include "cnn.h"
 #include "snn.h"
 #include "zorder.h"
 
-void randomizer( void )
+void eval( void )
 {
-    BCORE_LIFE_INIT();
-
-    BCORE_LIFE_CREATE( bmath_mf3_s, m1 );
-    BCORE_LIFE_CREATE( bmath_mf3_s, a );
-
-    uz_t m = 100;
-    uz_t n = 100;
-    uz_t rd = uz_min( m, n ) >> 1;
-
-    bmath_mf3_s_set_size( m1, m, n );
-
-    //void bmath_mf3_s_set_random( bmath_mf3_s* o, bl_t hsm, bl_t pdf, uz_t rd, f3_t density, f3_t min, f3_t max, u2_t* p_rval );
-
-    bmath_mf3_s_set_random( m1, false, false, rd, 0.1, -1, 1, NULL );
-    bmath_mf3_s_to_stdout( m1 );
-
-    bmath_mf3_s_set_size( a, m, n );
-    bmath_mf3_s_cpy(   m1, a );
-    bmath_mf3_s_qrd( NULL, a );
-//    bmath_mf3_s_to_stdout( a );
-
-    if( rd > 0 )
-    {
-        uz_t rank = uz_min( m, n ) - rd;
-        bcore_msg_fa( "#<f3_t>\n", a->data[ rank * ( a->stride + 1 ) ] / a->data[ 0 ] );
-    }
-
-    bmath_mf3_s_cpy(   m1, a );
-    bmath_mf3_s_qrd_pmt( NULL, a, NULL );
-//    bmath_mf3_s_to_stdout( a );
-
-    if( rd > 0 )
-    {
-        uz_t rank = uz_min( m, n ) - rd;
-        bcore_msg_fa( "#<f3_t>\n", a->data[ rank * ( a->stride + 1 ) ] / a->data[ 0 ] );
-    }
-
-    bcore_msg_fa( "#<f3_t>\n", f3_lim_eps );
-
-    BCORE_LIFE_DOWN();
-}
-
-int main( void )
-{
-    bcore_register_signal_handler( bmath_signal_handler );
-
-//    randomizer();
-//    return 0;
-
-//    bmath_quicktypes_to_stdout( NULL );
-//    return 0;
-
-    bcore_run_signal_selftest( typeof( "bmath_mf3" ), NULL );
-    bcore_run_signal_selftest( typeof( "bmath_vector" ), NULL );
-    bcore_run_signal_selftest( typeof( "bmath_predictor" ), NULL );
-    bcore_run_signal_selftest( typeof( "bmath_mf3_eval" ), NULL );
-    bcore_run_signal_selftest( typeof( "bmath_pmt" ), NULL );
-    bcore_run_signal_selftest( typeof( "bmath_simd" ), NULL );
-
-    bmath_hwflags_to_stdout();
-//    snn_selftest();
-    snn_selftest1();
-    snn_selftest2();
-    return 0;
-
     BCORE_LIFE_INIT();
     BCORE_LIFE_CREATE( bmath_mf3_eval_s, eval );
     BCORE_LIFE_CREATE( bmath_arr_mf3_eval_s, arr_eval );
@@ -111,9 +47,9 @@ int main( void )
 //    bmath_arr_mf3_eval_s_run_to_stdout( arr_eval, TYPEOF_bmath_fp_mf3_s_mul    , ( fp_t )bmath_mf3_s_morder_mul );
 //    bmath_arr_mf3_eval_s_run_to_stdout( arr_eval, TYPEOF_bmath_fp_mf3_s_mul    , ( fp_t )bmath_mf3_s_zorder_mul );
 
-    bmath_arr_mf3_eval_s_run_to_stdout( arr_eval, TYPEOF_bmath_fp_mf3_s_mul,     ( fp_t )bmath_mf3_s_mul );
-    bmath_arr_mf3_eval_s_run_to_stdout( arr_eval, TYPEOF_bmath_fp_mf3_s_mul_htp, ( fp_t )bmath_mf3_s_mul_htp );
-    bmath_arr_mf3_eval_s_run_to_stdout( arr_eval, TYPEOF_bmath_fp_mf3_s_htp_mul, ( fp_t )bmath_mf3_s_htp_mul );
+//    bmath_arr_mf3_eval_s_run_to_stdout( arr_eval, TYPEOF_bmath_fp_mf3_s_mul,     ( fp_t )bmath_mf3_s_mul );
+//    bmath_arr_mf3_eval_s_run_to_stdout( arr_eval, TYPEOF_bmath_fp_mf3_s_mul_htp, ( fp_t )bmath_mf3_s_mul_htp );
+//    bmath_arr_mf3_eval_s_run_to_stdout( arr_eval, TYPEOF_bmath_fp_mf3_s_htp_mul, ( fp_t )bmath_mf3_s_htp_mul );
 
 //    bmath_arr_mf3_eval_s_run_to_stdout( arr_eval, TYPEOF_bmath_fp_mf3_s_qrd    , ( fp_t )bmath_mf3_s_qrd );
 //    bmath_arr_mf3_eval_s_run_to_stdout( arr_eval, TYPEOF_bmath_fp_mf3_s_qrd    , ( fp_t )bmath_mf3_s_qrd2 );
@@ -149,7 +85,30 @@ int main( void )
 //    st_s_print_d( bcore_spect_status() );
 
     BCORE_LIFE_DOWN();
+}
 
+int main( void )
+{
+    bcore_register_signal_handler( bmath_signal_handler );
+
+//    bmath_quicktypes_to_stdout( NULL );
+//    return 0;
+
+    bmath_hwflags_to_stdout();
+
+    bcore_run_signal_selftest( typeof( "bmath_smf3" ), NULL );
+
+//    bcore_run_signal_selftest( typeof( "bmath_mf3" ), NULL );
+//    bcore_run_signal_selftest( typeof( "bmath_vector" ), NULL );
+//    bcore_run_signal_selftest( typeof( "bmath_predictor" ), NULL );
+//    bcore_run_signal_selftest( typeof( "bmath_mf3_eval" ), NULL );
+//    bcore_run_signal_selftest( typeof( "bmath_pmt" ), NULL );
+//    bcore_run_signal_selftest( typeof( "bmath_simd" ), NULL );
+
+    //bmath_smf3_s_mul1_eval();
+    bmath_smf3_s_convolution_eval2();
+
+    // eval();
     bcore_down( true );
     return 0;
 }
