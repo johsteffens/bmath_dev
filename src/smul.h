@@ -8,7 +8,7 @@
 
 void bmath_smf3_s_mul1( const bmath_smf3_s* o, const bmath_smf3_s* m, bmath_smf3_s* r );
 
-void bmath_smf3_s_mul1_eval();
+void bmath_smf3_s_mul_eval();
 
 void bmath_smf3_s_convolution_eval1();
 void bmath_smf3_s_convolution_eval2();

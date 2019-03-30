@@ -95,7 +95,6 @@ int main( void )
 //    return 0;
 
     bmath_hwflags_to_stdout();
-
     bcore_run_signal_selftest( typeof( "bmath_smf3" ), NULL );
 
 //    bcore_run_signal_selftest( typeof( "bmath_mf3" ), NULL );
@@ -105,7 +104,7 @@ int main( void )
 //    bcore_run_signal_selftest( typeof( "bmath_pmt" ), NULL );
 //    bcore_run_signal_selftest( typeof( "bmath_simd" ), NULL );
 
-    //bmath_smf3_s_mul1_eval();
+    bmath_smf3_s_mul_eval();
     bmath_smf3_s_convolution_eval2();
 
     // eval();
