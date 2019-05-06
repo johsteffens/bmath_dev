@@ -1,2 +1,2 @@
 # bmath_dev
-Development of beth-bmath library
+* Development of library [beth](https://github.com/johsteffens/beth)-bmath.
