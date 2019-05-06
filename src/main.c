@@ -13,7 +13,7 @@
 #include "snn.h"
 #include "zorder.h"
 
-void eval( void )
+void mf3_eval( void )
 {
     BCORE_LIFE_INIT();
     BCORE_LIFE_CREATE( bmath_mf3_eval_s, eval );
@@ -87,27 +87,54 @@ void eval( void )
     BCORE_LIFE_DOWN();
 }
 
+void mf3_s_eval( void )
+{
+    BCORE_LIFE_INIT();
+
+//    bmath_mf3_sx_s_convolution_eval1();
+//    bmath_mf3_sf_s_convolution_eval1();
+
+//    bmath_mf3_sx_s_mul_eval();
+    bmath_mf3_sf_s_mul_eval();
+
+//    bmath_mf3_sx_s_mul_htp_eval();
+    bmath_mf3_sf_s_mul_htp_eval();
+
+//    bmath_mf3_sx_s_htp_mul_eval();
+    bmath_mf3_sf_s_htp_mul_eval();
+
+    BCORE_LIFE_DOWN();
+}
+
 int main( void )
 {
     bcore_register_signal_handler( bmath_signal_handler );
+    if( bcore_precoder_run_globally() ) { bcore_down( true ); return 0; }
 
 //    bmath_quicktypes_to_stdout( NULL );
 //    return 0;
 
     bmath_hwflags_to_stdout();
-    bcore_run_signal_selftest( typeof( "bmath_smf3" ), NULL );
-
+//    bcore_run_signal_selftest( typeof( "bmath_smf3" ), NULL );
+    bcore_run_signal_selftest( typeof( "bmath_mf3_sx" ), NULL );
+    bcore_run_signal_selftest( typeof( "bmath_mf3_sf" ), NULL );
 //    bcore_run_signal_selftest( typeof( "bmath_mf3" ), NULL );
 //    bcore_run_signal_selftest( typeof( "bmath_vector" ), NULL );
 //    bcore_run_signal_selftest( typeof( "bmath_predictor" ), NULL );
 //    bcore_run_signal_selftest( typeof( "bmath_mf3_eval" ), NULL );
 //    bcore_run_signal_selftest( typeof( "bmath_pmt" ), NULL );
 //    bcore_run_signal_selftest( typeof( "bmath_simd" ), NULL );
+//    bmath_mf3_sx_s_htp_mul_eval();
 
-    bmath_smf3_s_mul_eval();
-    bmath_smf3_s_convolution_eval2();
+    // mf3_eval();
+    mf3_s_eval();
 
-    // eval();
+//    CPU_TIME_TO_STDOUT( cnn_1d_selftest2() );
+
+//    CPU_TIME_TO_STDOUT( bcore_run_signal_selftest( typeof( "bmath_adaptive_cnn_1d" ), NULL ) );
+//    CPU_TIME_TO_STDOUT( bcore_run_signal_selftest( typeof( "bmath_adaptive_mlp" ), NULL ) );
+
+    //snn_selftest2();
     bcore_down( true );
     return 0;
 }

@@ -5,9 +5,6 @@
 
 #include "bmath_std.h"
 #include "bmath_mf3.h"
-#include "bmath_cnn.h"
-
-void cnn_selftest1();
-void cnn_selftest2();
+#include "bmath_adaptive_cnn_1d.h"
 
 #endif  // CNN_H
