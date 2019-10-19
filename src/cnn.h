@@ -5,6 +5,5 @@
 
 #include "bmath_std.h"
 #include "bmath_mf3.h"
-#include "bmath_adaptive_cnn_1d.h"
 
 #endif  // CNN_H

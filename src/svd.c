@@ -1348,7 +1348,7 @@ bl_t bmath_mf3_s_svd_full( bmath_mf3_s* u, bmath_mf3_s* a, bmath_mf3_s* v )
         if( a->data[ i * ( a->stride + 1 ) ] < 0 )
         {
             a->data[ i * ( a->stride + 1 ) ] *= -1.0;
-            if( v ) bmath_mf3_s_mul_f3_to_row( v, -1.0, i );
+            if( v ) bmath_mf3_s_mul_fx_to_row( v, -1.0, i );
         }
     }
 
