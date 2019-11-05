@@ -30,39 +30,40 @@ bl_t decompose_cholesky( const bmath_mf3_s* o, bmath_mf3_s* res )
 
     bmath_mf3_s_cpy( o, res );
 
+    /* This implementation actively uses the upper triangle of res.
+     * It allows a more cache efficient data progression in innermost loops.
+     */
     for( sz_t i = 0; i < n; i++ )
     {
         f3_t* vi = res->data + i * res->stride;
         for( sz_t j = 0; j < i; j++ )
         {
             f3_t* vj = res->data + j * res->stride;
-            for( sz_t k = j + 1; k < i; k++ ) vi[ k ] -= vi[ j ] * q[ j ] * vj[ k ];
-        }
-
-        for( sz_t j = 0; j < i; j++ )
-        {
-            f3_t* vj = res->data + j * res->stride;
             vi[ j ] *= q[ j ];
-            vj[ i ] = vi[ j ];
+            vj[ i ] = vi[ j ]; // we keep res symmetric
+            for( sz_t k = j + 1; k < i; k++ ) vi[ k ] -= vi[ j ] * vj[ k ];
         }
 
+        for( sz_t j = 0; j < i; j++ ) vi[ i ] -= f3_sqr( vi[ j ] );
+
+        if( vi[ i ] <= BCATU(f3,lim_min) )
         {
-            for( sz_t j = 0; j < i; j++ ) vi[ i ] -= f3_sqr( vi[ j ] );
-            if( vi[ i ] <= BCATU(f3,lim_min) )
-            {
-                success = false;
-                vi[ i ] = 0;
-                q [ i ] = 0;
-            }
-            else
-            {
-                vi[ i ] = sqrt( vi[ i ] );
-                q [ i ] = ( 1.0 / vi[ i ] );
-            }
+            success = false;
+            vi[ i ] = 0;
+            q [ i ] = 0;
+        }
+        else
+        {
+            vi[ i ] = sqrt( vi[ i ] );
+            q [ i ] = ( 1.0 / vi[ i ] );
         }
     }
 
-    /// zero upper triangle
+    /* Zeroing upper triangle.
+     * This guarantees the equality: o = res * res^T.
+     * Typical use cases do not require that equality.
+     * Since the footprint is negligible, we do it anyway.
+     */
     for( sz_t i = 0; i < n; i++ )
     {
         f3_t* vi = res->data + i * res->stride;
@@ -153,7 +154,7 @@ void mf3_eval( void )
 //    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval_sqr, mf3_s_trd    , bmath_mf3_s_trd );
 //    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval_sqr, mf3_s_evd_htp, bmath_mf3_s_evd_htp );
 
-//    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval_sqr, mf2_s_cld    , bmath_mf2_s_decompose_cholesky );
+    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval_sqr, mf2_s_cld    , bmath_mf2_s_decompose_cholesky );
 //    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval_sqr, mf2_s_lud    , bmath_mf2_s_decompose_luc );
 //    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval_sqr, mf2_s_inv    , bmath_mf2_s_inv );
 //    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval_sqr, mf2_s_pdf_inv, bmath_mf2_s_pdf_inv );
@@ -164,7 +165,7 @@ void mf3_eval( void )
     BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval_sqr, mf3_s_cld    , bmath_mf3_s_decompose_cholesky );
 //    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval_sqr, mf3_s_lud    , bmath_mf3_s_decompose_luc );
 //    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval_sqr, mf3_s_inv    , bmath_mf3_s_inv );
-//    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval_sqr, mf3_s_pdf_inv, bmath_mf3_s_pdf_inv );
+    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval_sqr, mf3_s_pdf_inv, bmath_mf3_s_pdf_inv );
 //    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval_sqr, mf3_s_piv    , bmath_mf3_s_piv );
 //    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval_sqr, mf3_s_hsm_piv, bmath_mf3_s_hsm_piv );
 
