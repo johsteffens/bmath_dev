@@ -13,47 +13,60 @@
 #include "snn.h"
 #include "zorder.h"
 
-//----------------------------------------------------------------------------------------------------------------------
-
-static bl_t decompose_luc( const bmath_mf3_s* o, bmath_mf3_s* res )
+bl_t decompose_cholesky( const bmath_mf3_s* o, bmath_mf3_s* res )
 {
-    // o == res is allowed
-
+    // Algorithm works in-place: No need to check for o == res;
     ASSERT( BCATU(bmath_mf3_s,is_square)( o ) );
     ASSERT( BCATU(bmath_mf3_s,is_equ_size)( o, res ) );
-    sz_t n = o->cols;
-    sz_t stride = res->stride;
+
     bl_t success = true;
 
-    BCATU(bmath_mf3_s,cpy)( o, res );
+    sz_t n = o->rows;
 
-    bmath_vf3_s* inv_diag = BCATU(bmath_vf3_s,create)();
-    BCATU(bmath_vf3_s,set_size)( inv_diag, res->rows );
+    bmath_vf3_s* inv_diag = bmath_vf3_s_create();
+    bmath_vf3_s_set_size( inv_diag, n );
 
     f3_t* q = inv_diag->data;
 
+    bmath_mf3_s_cpy( o, res );
+
     for( sz_t i = 0; i < n; i++ )
     {
-        f3_t* vi = res->data + i * stride;
+        f3_t* vi = res->data + i * res->stride;
+        for( sz_t j = 0; j < i; j++ )
+        {
+            f3_t* vj = res->data + j * res->stride;
+            for( sz_t k = j + 1; k < i; k++ ) vi[ k ] -= vi[ j ] * q[ j ] * vj[ k ];
+        }
 
         for( sz_t j = 0; j < i; j++ )
         {
-            f3_t* vj = res->data + j * stride;
-            for( sz_t k = j + 1; k < n; k++ ) vi[ k ] -= vi[ j ] * q[ j ] * vj[ k ];
+            f3_t* vj = res->data + j * res->stride;
+            vi[ j ] *= q[ j ];
+            vj[ i ] = vi[ j ];
         }
 
-        for( sz_t j = 0; j < i; j++ ) vi[ j ] *= q[ j ];
+        {
+            for( sz_t j = 0; j < i; j++ ) vi[ i ] -= f3_sqr( vi[ j ] );
+            if( vi[ i ] <= BCATU(f3,lim_min) )
+            {
+                success = false;
+                vi[ i ] = 0;
+                q [ i ] = 0;
+            }
+            else
+            {
+                vi[ i ] = sqrt( vi[ i ] );
+                q [ i ] = ( 1.0 / vi[ i ] );
+            }
+        }
+    }
 
-        f3_t denom = vi[ i ];
-        if( BCATU(f3,abs)( denom ) <= BCATU(f3,lim_min) )
-        {
-            success = false;
-            q[ i ] = 0;
-        }
-        else
-        {
-            q[ i ] = 1.0 / denom;
-        }
+    /// zero upper triangle
+    for( sz_t i = 0; i < n; i++ )
+    {
+        f3_t* vi = res->data + i * res->stride;
+        for( sz_t j = i + 1; j < n; j++ ) vi[ j ] = 0;
     }
 
     bmath_vf3_s_discard( inv_diag );
@@ -90,7 +103,7 @@ void mf3_eval( void )
 //    eval->rows = 1000; eval->cols = 1000; bmath_arr_mfx_eval_s_push( arr_eval, eval );
 //    eval->rows = 992; eval->cols = 992; bmath_arr_mfx_eval_s_push( arr_eval, eval );
 
-    eval->rows = 128; eval->cols = 128;  eval->dim3 = -1; bmath_arr_mfx_eval_s_push( arr_eval_sqr, eval );
+    eval->rows = 1024; eval->cols = 1024;  eval->dim3 = -1; bmath_arr_mfx_eval_s_push( arr_eval_sqr, eval );
 
 //    eval->rows = 233; eval->cols = 654; eval->dim3 = 739; bmath_arr_mfx_eval_s_push( arr_eval, eval );
 //    eval->rows = 200; eval->cols = 200; eval->dim3 = 200; bmath_arr_mfx_eval_s_push( arr_eval, eval );
@@ -140,18 +153,15 @@ void mf3_eval( void )
 //    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval_sqr, mf3_s_trd    , bmath_mf3_s_trd );
 //    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval_sqr, mf3_s_evd_htp, bmath_mf3_s_evd_htp );
 
-    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval_sqr, mf3_s_lud, decompose_luc );
-    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval_sqr, mf3_s_lud, bmath_mf3_s_decompose_luc );
-    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval_sqr, mf2_s_lud, bmath_mf2_s_decompose_luc );
-
 //    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval_sqr, mf2_s_cld    , bmath_mf2_s_decompose_cholesky );
 //    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval_sqr, mf2_s_lud    , bmath_mf2_s_decompose_luc );
 //    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval_sqr, mf2_s_inv    , bmath_mf2_s_inv );
 //    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval_sqr, mf2_s_pdf_inv, bmath_mf2_s_pdf_inv );
 //    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval_sqr, mf2_s_piv    , bmath_mf2_s_piv );
 //    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval_sqr, mf2_s_hsm_piv, bmath_mf2_s_hsm_piv );
-//
-//    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval_sqr, mf3_s_cld    , bmath_mf3_s_decompose_cholesky );
+
+    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval_sqr, mf3_s_cld    , decompose_cholesky );
+    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval_sqr, mf3_s_cld    , bmath_mf3_s_decompose_cholesky );
 //    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval_sqr, mf3_s_lud    , bmath_mf3_s_decompose_luc );
 //    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval_sqr, mf3_s_inv    , bmath_mf3_s_inv );
 //    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval_sqr, mf3_s_pdf_inv, bmath_mf3_s_pdf_inv );
