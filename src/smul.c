@@ -18,13 +18,13 @@ static sz_t mf3_sx_midof( sz_t v, const sz_t bz )
 
 //----------------------------------------------------------------------------------------------------------------------
 
-void bmath_mf3_sx_s_htp_mul2( const bmath_mf3_sx_s* o, const bmath_mf3_sx_s* m, bmath_mf3_sx_s* r )
+void bmath_xsmf3_s_htp_mul2( const bmath_xsmf3_s* o, const bmath_xsmf3_s* m, bmath_xsmf3_s* r )
 {
     ASSERT( o->xons * o->slos == r->rows );
     ASSERT( o->rows           == m->rows );
     ASSERT( m->xons           == r->xons );
     ASSERT( m->slos           == r->slos );
-    bmath_mf3_sx_s_zro( r );
+    bmath_xsmf3_s_zro( r );
 
     for( sz_t o_row = 0; o_row < o->rows; o_row++ )
     {
@@ -50,7 +50,7 @@ void bmath_mf3_sx_s_htp_mul2( const bmath_mf3_sx_s* o, const bmath_mf3_sx_s* m, 
 
 //----------------------------------------------------------------------------------------------------------------------
 
-void bmath_mf3_sx_s_htp_mul_eval()
+void bmath_xsmf3_s_htp_mul_eval()
 {
     BCORE_LIFE_INIT();
 
@@ -71,13 +71,13 @@ void bmath_mf3_sx_s_htp_mul_eval()
     BCORE_LIFE_CREATE( bmath_mf3_s, m3 );
     BCORE_LIFE_CREATE( bmath_mf3_s, m4 );
 
-    BCORE_LIFE_CREATE( bmath_mf3_sx_s, sm1 );
-    BCORE_LIFE_CREATE( bmath_mf3_sx_s, sm2 );
-    BCORE_LIFE_CREATE( bmath_mf3_sx_s, sm3 );
+    BCORE_LIFE_CREATE( bmath_xsmf3_s, sm1 );
+    BCORE_LIFE_CREATE( bmath_xsmf3_s, sm2 );
+    BCORE_LIFE_CREATE( bmath_xsmf3_s, sm3 );
 
-    bmath_mf3_sx_s_set_size( sm1, rows1, xons1, slos1 );
-    bmath_mf3_sx_s_set_size( sm2, rows2, xons2, slos2 );
-    bmath_mf3_sx_s_set_size( sm3, rows3, xons3, slos3 );
+    bmath_xsmf3_s_set_size( sm1, rows1, xons1, slos1 );
+    bmath_xsmf3_s_set_size( sm2, rows2, xons2, slos2 );
+    bmath_xsmf3_s_set_size( sm3, rows3, xons3, slos3 );
 
     bmath_mf3_s_set_size( m1, rows1, xons1 * slos1 );
     bmath_mf3_s_set_size( m2, rows2, xons2 * slos2 );
@@ -85,18 +85,18 @@ void bmath_mf3_sx_s_htp_mul_eval()
     bmath_mf3_s_set_size( m4, rows3, xons3 * slos3 );
 
     u2_t rval = 1234;
-    bmath_mf3_sx_s_set_random( sm1, false, false, 0, 1.0, -1.0, 1.0, &rval );
-    bmath_mf3_sx_s_set_random( sm2, false, false, 0, 1.0, -1.0, 1.0, &rval );
-    bmath_mf3_sx_s_cpy_ifl_to_mf3( sm1, m1 );
-    bmath_mf3_sx_s_cpy_ifl_to_mf3( sm2, m2 );
+    bmath_xsmf3_s_set_random( sm1, false, false, 0, 1.0, -1.0, 1.0, &rval );
+    bmath_xsmf3_s_set_random( sm2, false, false, 0, 1.0, -1.0, 1.0, &rval );
+    bmath_xsmf3_s_cpy_ifl_to_mf3( sm1, m1 );
+    bmath_xsmf3_s_cpy_ifl_to_mf3( sm2, m2 );
 
     CPU_TIME_TO_STDOUT( bmath_mf3_s_htp_mul( m1, m2, m3 ) );
-//    CPU_TIME_TO_STDOUT( bmath_mf3_sx_s_htp_mul1( sm1, sm2, sm3 ) );
-    CPU_TIME_TO_STDOUT( bmath_mf3_sx_s_htp_mul( sm1, sm2, sm3 ) );
+//    CPU_TIME_TO_STDOUT( bmath_xsmf3_s_htp_mul1( sm1, sm2, sm3 ) );
+    CPU_TIME_TO_STDOUT( bmath_xsmf3_s_htp_mul( sm1, sm2, sm3 ) );
 
-//    bmath_mf3_sx_s_to_stdout( sm3 );
+//    bmath_xsmf3_s_to_stdout( sm3 );
 
-    bmath_mf3_sx_s_cpy_ifl_to_mf3( sm3, m4 );
+    bmath_xsmf3_s_cpy_ifl_to_mf3( sm3, m4 );
 
     ASSERT( bmath_mf3_s_is_near_equ( m3, m4, 1E-8 ) );
 
@@ -105,13 +105,13 @@ void bmath_mf3_sx_s_htp_mul_eval()
 
 //----------------------------------------------------------------------------------------------------------------------
 
-void bmath_mf3_sx_s_mul_htp1( const bmath_mf3_sx_s* o, const bmath_mf3_sx_s* m, bmath_mf3_sx_s* r )
+void bmath_xsmf3_s_mul_htp1( const bmath_xsmf3_s* o, const bmath_xsmf3_s* m, bmath_xsmf3_s* r )
 {
     ASSERT( o->rows == r->rows );
     ASSERT( m->rows == r->xons * r->slos );
     ASSERT( o->xons == m->xons );
     ASSERT( o->slos == m->slos );
-    bmath_mf3_sx_s_zro( r );
+    bmath_xsmf3_s_zro( r );
 
     for( sz_t o_row = 0; o_row < o->rows; o_row++ )
     {
@@ -136,7 +136,7 @@ void bmath_mf3_sx_s_mul_htp1( const bmath_mf3_sx_s* o, const bmath_mf3_sx_s* m, 
 
 //----------------------------------------------------------------------------------------------------------------------
 
-void bmath_mf3_sx_s_mul_htp_eval()
+void bmath_xsmf3_s_mul_htp_eval()
 {
     BCORE_LIFE_INIT();
 
@@ -157,13 +157,13 @@ void bmath_mf3_sx_s_mul_htp_eval()
     BCORE_LIFE_CREATE( bmath_mf3_s, m3 );
     BCORE_LIFE_CREATE( bmath_mf3_s, m4 );
 
-    BCORE_LIFE_CREATE( bmath_mf3_sx_s, sm1 );
-    BCORE_LIFE_CREATE( bmath_mf3_sx_s, sm2 );
-    BCORE_LIFE_CREATE( bmath_mf3_sx_s, sm3 );
+    BCORE_LIFE_CREATE( bmath_xsmf3_s, sm1 );
+    BCORE_LIFE_CREATE( bmath_xsmf3_s, sm2 );
+    BCORE_LIFE_CREATE( bmath_xsmf3_s, sm3 );
 
-    bmath_mf3_sx_s_set_size( sm1, rows1, xons1, slos1 );
-    bmath_mf3_sx_s_set_size( sm2, rows2, xons2, slos2 );
-    bmath_mf3_sx_s_set_size( sm3, rows3, xons3, slos3 );
+    bmath_xsmf3_s_set_size( sm1, rows1, xons1, slos1 );
+    bmath_xsmf3_s_set_size( sm2, rows2, xons2, slos2 );
+    bmath_xsmf3_s_set_size( sm3, rows3, xons3, slos3 );
 
     bmath_mf3_s_set_size( m1, rows1, xons1 * slos1 );
     bmath_mf3_s_set_size( m2, rows2, xons2 * slos2 );
@@ -171,17 +171,17 @@ void bmath_mf3_sx_s_mul_htp_eval()
     bmath_mf3_s_set_size( m4, rows3, xons3 * slos3 );
 
     u2_t rval = 1234;
-    bmath_mf3_sx_s_set_random( sm1, false, false, 0, 1.0, -1.0, 1.0, &rval );
-    bmath_mf3_sx_s_set_random( sm2, false, false, 0, 1.0, -1.0, 1.0, &rval );
-    bmath_mf3_sx_s_cpy_ifl_to_mf3( sm1, m1 );
-    bmath_mf3_sx_s_cpy_ifl_to_mf3( sm2, m2 );
+    bmath_xsmf3_s_set_random( sm1, false, false, 0, 1.0, -1.0, 1.0, &rval );
+    bmath_xsmf3_s_set_random( sm2, false, false, 0, 1.0, -1.0, 1.0, &rval );
+    bmath_xsmf3_s_cpy_ifl_to_mf3( sm1, m1 );
+    bmath_xsmf3_s_cpy_ifl_to_mf3( sm2, m2 );
 
     CPU_TIME_TO_STDOUT( bmath_mf3_s_mul_htp( m1, m2, m3 ) );
-    CPU_TIME_TO_STDOUT( bmath_mf3_sx_s_mul_htp(  sm1, sm2, sm3 ) );
+    CPU_TIME_TO_STDOUT( bmath_xsmf3_s_mul_htp(  sm1, sm2, sm3 ) );
 
-//    bmath_mf3_sx_s_to_stdout( sm3 );
+//    bmath_xsmf3_s_to_stdout( sm3 );
 
-    bmath_mf3_sx_s_cpy_ifl_to_mf3( sm3, m4 );
+    bmath_xsmf3_s_cpy_ifl_to_mf3( sm3, m4 );
 
     ASSERT( bmath_mf3_s_is_near_equ( m3, m4, 1E-8 ) );
 
@@ -190,13 +190,13 @@ void bmath_mf3_sx_s_mul_htp_eval()
 
 //----------------------------------------------------------------------------------------------------------------------
 
-void bmath_mf3_sx_s_mul1( const bmath_mf3_sx_s* o, const bmath_mf3_sx_s* m, bmath_mf3_sx_s* r )
+void bmath_xsmf3_s_mul1( const bmath_xsmf3_s* o, const bmath_xsmf3_s* m, bmath_xsmf3_s* r )
 {
     ASSERT( o->rows           == r->rows );
     ASSERT( o->xons * o->slos == m->rows );
     ASSERT( m->xons           == r->xons );
     ASSERT( m->slos           == r->slos );
-    bmath_mf3_sx_s_zro( r );
+    bmath_xsmf3_s_zro( r );
 
     for( sz_t o_row = 0; o_row < o->rows; o_row++ )
     {
@@ -221,7 +221,7 @@ void bmath_mf3_sx_s_mul1( const bmath_mf3_sx_s* o, const bmath_mf3_sx_s* m, bmat
 
 //----------------------------------------------------------------------------------------------------------------------
 
-void bmath_mf3_sx_s_mul_eval()
+void bmath_xsmf3_s_mul_eval()
 {
     BCORE_LIFE_INIT();
 
@@ -236,13 +236,13 @@ void bmath_mf3_sx_s_mul_eval()
     BCORE_LIFE_CREATE( bmath_mf3_s, m3 );
     BCORE_LIFE_CREATE( bmath_mf3_s, m4 );
 
-    BCORE_LIFE_CREATE( bmath_mf3_sx_s, sm1 );
-    BCORE_LIFE_CREATE( bmath_mf3_sx_s, sm2 );
-    BCORE_LIFE_CREATE( bmath_mf3_sx_s, sm3 );
+    BCORE_LIFE_CREATE( bmath_xsmf3_s, sm1 );
+    BCORE_LIFE_CREATE( bmath_xsmf3_s, sm2 );
+    BCORE_LIFE_CREATE( bmath_xsmf3_s, sm3 );
 
-    bmath_mf3_sx_s_set_size( sm1, rows1,         xons1, slos1 );
-    bmath_mf3_sx_s_set_size( sm2, xons1 * slos1, xons2, slos2 );
-    bmath_mf3_sx_s_set_size( sm3, rows1,         xons2, slos2 );
+    bmath_xsmf3_s_set_size( sm1, rows1,         xons1, slos1 );
+    bmath_xsmf3_s_set_size( sm2, xons1 * slos1, xons2, slos2 );
+    bmath_xsmf3_s_set_size( sm3, rows1,         xons2, slos2 );
 
     bmath_mf3_s_set_size( m1, rows1,         xons1 * slos1 );
     bmath_mf3_s_set_size( m2, xons1 * slos1, xons2 * slos2 );
@@ -250,18 +250,18 @@ void bmath_mf3_sx_s_mul_eval()
     bmath_mf3_s_set_size( m4, rows1,         xons2 * slos2 );
 
     u2_t rval = 1234;
-    bmath_mf3_sx_s_set_random( sm1, false, false, 0, 1.0, -1.0, 1.0, &rval );
-    bmath_mf3_sx_s_set_random( sm2, false, false, 0, 1.0, -1.0, 1.0, &rval );
-    bmath_mf3_sx_s_cpy_ifl_to_mf3( sm1, m1 );
-    bmath_mf3_sx_s_cpy_ifl_to_mf3( sm2, m2 );
+    bmath_xsmf3_s_set_random( sm1, false, false, 0, 1.0, -1.0, 1.0, &rval );
+    bmath_xsmf3_s_set_random( sm2, false, false, 0, 1.0, -1.0, 1.0, &rval );
+    bmath_xsmf3_s_cpy_ifl_to_mf3( sm1, m1 );
+    bmath_xsmf3_s_cpy_ifl_to_mf3( sm2, m2 );
 
     CPU_TIME_TO_STDOUT( bmath_mf3_s_mul( m1, m2, m3 ) );
-//    CPU_TIME_TO_STDOUT( bmath_mf3_sx_s_mul1( sm1, sm2, sm3 ) );
-    CPU_TIME_TO_STDOUT( bmath_mf3_sx_s_mul(  sm1, sm2, sm3 ) );
+//    CPU_TIME_TO_STDOUT( bmath_xsmf3_s_mul1( sm1, sm2, sm3 ) );
+    CPU_TIME_TO_STDOUT( bmath_xsmf3_s_mul(  sm1, sm2, sm3 ) );
 
-//    bmath_mf3_sx_s_to_stdout( sm3 );
+//    bmath_xsmf3_s_to_stdout( sm3 );
 
-    bmath_mf3_sx_s_cpy_ifl_to_mf3( sm3, m4 );
+    bmath_xsmf3_s_cpy_ifl_to_mf3( sm3, m4 );
 
     ASSERT( bmath_mf3_s_is_near_equ( m3, m4, 1E-8 ) );
 
@@ -274,12 +274,12 @@ void bmath_mf3_sx_s_mul_eval()
 
 //----------------------------------------------------------------------------------------------------------------------
 
-void bmath_mf3_sf_s_htp_mul1( const bmath_mf3_sf_s* o, const bmath_mf3_sf_s* m, bmath_mf3_sf_s* r )
+void bmath_asmf3_s_htp_mul1( const bmath_asmf3_s* o, const bmath_asmf3_s* m, bmath_asmf3_s* r )
 {
     ASSERT( o->cols == r->rows );
     ASSERT( o->rows == m->rows );
     ASSERT( m->cols == r->cols );
-    bmath_mf3_sf_s_zro( r );
+    bmath_asmf3_s_zro( r );
 
     for( sz_t o_row = 0; o_row < o->rows; o_row++ )
     {
@@ -299,7 +299,7 @@ void bmath_mf3_sf_s_htp_mul1( const bmath_mf3_sf_s* o, const bmath_mf3_sf_s* m, 
 
 //----------------------------------------------------------------------------------------------------------------------
 
-void bmath_mf3_sf_s_htp_mul_eval()
+void bmath_asmf3_s_htp_mul_eval()
 {
     BCORE_LIFE_INIT();
 
@@ -316,13 +316,13 @@ void bmath_mf3_sf_s_htp_mul_eval()
     BCORE_LIFE_CREATE( bmath_mf3_s, m3 );
     BCORE_LIFE_CREATE( bmath_mf3_s, m4 );
 
-    BCORE_LIFE_CREATE( bmath_mf3_sf_s, sm1 );
-    BCORE_LIFE_CREATE( bmath_mf3_sf_s, sm2 );
-    BCORE_LIFE_CREATE( bmath_mf3_sf_s, sm3 );
+    BCORE_LIFE_CREATE( bmath_asmf3_s, sm1 );
+    BCORE_LIFE_CREATE( bmath_asmf3_s, sm2 );
+    BCORE_LIFE_CREATE( bmath_asmf3_s, sm3 );
 
-    bmath_mf3_sf_s_set_size( sm1, rows1, cols1 );
-    bmath_mf3_sf_s_set_size( sm2, rows2, cols2 );
-    bmath_mf3_sf_s_set_size( sm3, rows3, cols3 );
+    bmath_asmf3_s_set_size( sm1, rows1, cols1 );
+    bmath_asmf3_s_set_size( sm2, rows2, cols2 );
+    bmath_asmf3_s_set_size( sm3, rows3, cols3 );
 
     bmath_mf3_s_set_size( m1, rows1, cols1 );
     bmath_mf3_s_set_size( m2, rows2, cols2 );
@@ -330,18 +330,18 @@ void bmath_mf3_sf_s_htp_mul_eval()
     bmath_mf3_s_set_size( m4, rows3, cols3 );
 
     u2_t rval = 1234;
-    bmath_mf3_sf_s_set_random( sm1, false, false, 0, 1.0, -1.0, 1.0, &rval );
-    bmath_mf3_sf_s_set_random( sm2, false, false, 0, 1.0, -1.0, 1.0, &rval );
-    bmath_mf3_sf_s_cpy_ifl_to_mf3( sm1, m1 );
-    bmath_mf3_sf_s_cpy_ifl_to_mf3( sm2, m2 );
+    bmath_asmf3_s_set_random( sm1, false, false, 0, 1.0, -1.0, 1.0, &rval );
+    bmath_asmf3_s_set_random( sm2, false, false, 0, 1.0, -1.0, 1.0, &rval );
+    bmath_asmf3_s_cpy_ifl_to_mf3( sm1, m1 );
+    bmath_asmf3_s_cpy_ifl_to_mf3( sm2, m2 );
 
     CPU_TIME_TO_STDOUT( bmath_mf3_s_htp_mul( m1, m2, m3 ) );
-//    CPU_TIME_TO_STDOUT( bmath_mf3_sf_s_htp_mul1( sm1, sm2, sm3 ) );
-    CPU_TIME_TO_STDOUT( bmath_mf3_sf_s_htp_mul( sm1, sm2, sm3 ) );
+//    CPU_TIME_TO_STDOUT( bmath_asmf3_s_htp_mul1( sm1, sm2, sm3 ) );
+    CPU_TIME_TO_STDOUT( bmath_asmf3_s_htp_mul( sm1, sm2, sm3 ) );
 
-//    bmath_mf3_sf_s_to_stdout( sm3 );
+//    bmath_asmf3_s_to_stdout( sm3 );
 
-    bmath_mf3_sf_s_cpy_ifl_to_mf3( sm3, m4 );
+    bmath_asmf3_s_cpy_ifl_to_mf3( sm3, m4 );
 
     ASSERT( bmath_mf3_s_is_near_equ( m3, m4, 1E-8 ) );
 
@@ -350,12 +350,12 @@ void bmath_mf3_sf_s_htp_mul_eval()
 
 //----------------------------------------------------------------------------------------------------------------------
 
-void bmath_mf3_sf_s_mul_htp1( const bmath_mf3_sf_s* o, const bmath_mf3_sf_s* m, bmath_mf3_sf_s* r )
+void bmath_asmf3_s_mul_htp1( const bmath_asmf3_s* o, const bmath_asmf3_s* m, bmath_asmf3_s* r )
 {
     ASSERT( o->rows == r->rows );
     ASSERT( m->rows == r->cols );
     ASSERT( o->cols == m->cols );
-    bmath_mf3_sf_s_zro( r );
+    bmath_asmf3_s_zro( r );
 
     for( sz_t o_row = 0; o_row < o->rows; o_row++ )
     {
@@ -374,7 +374,7 @@ void bmath_mf3_sf_s_mul_htp1( const bmath_mf3_sf_s* o, const bmath_mf3_sf_s* m, 
 
 //----------------------------------------------------------------------------------------------------------------------
 
-void bmath_mf3_sf_s_mul_htp_eval()
+void bmath_asmf3_s_mul_htp_eval()
 {
     BCORE_LIFE_INIT();
 
@@ -395,13 +395,13 @@ void bmath_mf3_sf_s_mul_htp_eval()
     BCORE_LIFE_CREATE( bmath_mf3_s, m3 );
     BCORE_LIFE_CREATE( bmath_mf3_s, m4 );
 
-    BCORE_LIFE_CREATE( bmath_mf3_sf_s, sm1 );
-    BCORE_LIFE_CREATE( bmath_mf3_sf_s, sm2 );
-    BCORE_LIFE_CREATE( bmath_mf3_sf_s, sm3 );
+    BCORE_LIFE_CREATE( bmath_asmf3_s, sm1 );
+    BCORE_LIFE_CREATE( bmath_asmf3_s, sm2 );
+    BCORE_LIFE_CREATE( bmath_asmf3_s, sm3 );
 
-    bmath_mf3_sf_s_set_size( sm1, rows1, cols1 );
-    bmath_mf3_sf_s_set_size( sm2, rows2, cols2 );
-    bmath_mf3_sf_s_set_size( sm3, rows3, cols3 );
+    bmath_asmf3_s_set_size( sm1, rows1, cols1 );
+    bmath_asmf3_s_set_size( sm2, rows2, cols2 );
+    bmath_asmf3_s_set_size( sm3, rows3, cols3 );
 
     bmath_mf3_s_set_size( m1, rows1, cols1 );
     bmath_mf3_s_set_size( m2, rows2, cols2 );
@@ -409,18 +409,18 @@ void bmath_mf3_sf_s_mul_htp_eval()
     bmath_mf3_s_set_size( m4, rows3, cols3 );
 
     u2_t rval = 1234;
-    bmath_mf3_sf_s_set_random( sm1, false, false, 0, 1.0, -1.0, 1.0, &rval );
-    bmath_mf3_sf_s_set_random( sm2, false, false, 0, 1.0, -1.0, 1.0, &rval );
-    bmath_mf3_sf_s_cpy_ifl_to_mf3( sm1, m1 );
-    bmath_mf3_sf_s_cpy_ifl_to_mf3( sm2, m2 );
+    bmath_asmf3_s_set_random( sm1, false, false, 0, 1.0, -1.0, 1.0, &rval );
+    bmath_asmf3_s_set_random( sm2, false, false, 0, 1.0, -1.0, 1.0, &rval );
+    bmath_asmf3_s_cpy_ifl_to_mf3( sm1, m1 );
+    bmath_asmf3_s_cpy_ifl_to_mf3( sm2, m2 );
 
     CPU_TIME_TO_STDOUT( bmath_mf3_s_mul_htp( m1, m2, m3 ) );
-//    CPU_TIME_TO_STDOUT( bmath_mf3_sf_s_mul_htp1(  sm1, sm2, sm3 ) );
-    CPU_TIME_TO_STDOUT( bmath_mf3_sf_s_mul_htp(  sm1, sm2, sm3 ) );
+//    CPU_TIME_TO_STDOUT( bmath_asmf3_s_mul_htp1(  sm1, sm2, sm3 ) );
+    CPU_TIME_TO_STDOUT( bmath_asmf3_s_mul_htp(  sm1, sm2, sm3 ) );
 
-//    bmath_mf3_sf_s_to_stdout( sm3 );
+//    bmath_asmf3_s_to_stdout( sm3 );
 
-    bmath_mf3_sf_s_cpy_ifl_to_mf3( sm3, m4 );
+    bmath_asmf3_s_cpy_ifl_to_mf3( sm3, m4 );
 
     ASSERT( bmath_mf3_s_is_near_equ( m3, m4, 1E-8 ) );
 
@@ -429,12 +429,12 @@ void bmath_mf3_sf_s_mul_htp_eval()
 
 //----------------------------------------------------------------------------------------------------------------------
 
-void bmath_mf3_sf_s_mul1( const bmath_mf3_sf_s* o, const bmath_mf3_sf_s* m, bmath_mf3_sf_s* r )
+void bmath_asmf3_s_mul1( const bmath_asmf3_s* o, const bmath_asmf3_s* m, bmath_asmf3_s* r )
 {
     ASSERT( o->rows == r->rows );
     ASSERT( o->cols == m->rows );
     ASSERT( m->cols == r->cols );
-    bmath_mf3_sf_s_zro( r );
+    bmath_asmf3_s_zro( r );
 
     for( sz_t o_row = 0; o_row < o->rows; o_row++ )
     {
@@ -453,7 +453,7 @@ void bmath_mf3_sf_s_mul1( const bmath_mf3_sf_s* o, const bmath_mf3_sf_s* m, bmat
 
 //----------------------------------------------------------------------------------------------------------------------
 
-void bmath_mf3_sf_s_mul_eval()
+void bmath_asmf3_s_mul_eval()
 {
     BCORE_LIFE_INIT();
 
@@ -470,13 +470,13 @@ void bmath_mf3_sf_s_mul_eval()
     BCORE_LIFE_CREATE( bmath_mf3_s, m3 );
     BCORE_LIFE_CREATE( bmath_mf3_s, m4 );
 
-    BCORE_LIFE_CREATE( bmath_mf3_sf_s, sm1 );
-    BCORE_LIFE_CREATE( bmath_mf3_sf_s, sm2 );
-    BCORE_LIFE_CREATE( bmath_mf3_sf_s, sm3 );
+    BCORE_LIFE_CREATE( bmath_asmf3_s, sm1 );
+    BCORE_LIFE_CREATE( bmath_asmf3_s, sm2 );
+    BCORE_LIFE_CREATE( bmath_asmf3_s, sm3 );
 
-    bmath_mf3_sf_s_set_size( sm1, rows1, cols1 );
-    bmath_mf3_sf_s_set_size( sm2, cols1, cols2 );
-    bmath_mf3_sf_s_set_size( sm3, rows1, cols2 );
+    bmath_asmf3_s_set_size( sm1, rows1, cols1 );
+    bmath_asmf3_s_set_size( sm2, cols1, cols2 );
+    bmath_asmf3_s_set_size( sm3, rows1, cols2 );
 
     bmath_mf3_s_set_size( m1, rows1, cols1 );
     bmath_mf3_s_set_size( m2, cols1, cols2 );
@@ -484,18 +484,18 @@ void bmath_mf3_sf_s_mul_eval()
     bmath_mf3_s_set_size( m4, rows1, cols2 );
 
     u2_t rval = 1234;
-    bmath_mf3_sf_s_set_random( sm1, false, false, 0, 1.0, -1.0, 1.0, &rval );
-    bmath_mf3_sf_s_set_random( sm2, false, false, 0, 1.0, -1.0, 1.0, &rval );
-    bmath_mf3_sf_s_cpy_ifl_to_mf3( sm1, m1 );
-    bmath_mf3_sf_s_cpy_ifl_to_mf3( sm2, m2 );
+    bmath_asmf3_s_set_random( sm1, false, false, 0, 1.0, -1.0, 1.0, &rval );
+    bmath_asmf3_s_set_random( sm2, false, false, 0, 1.0, -1.0, 1.0, &rval );
+    bmath_asmf3_s_cpy_ifl_to_mf3( sm1, m1 );
+    bmath_asmf3_s_cpy_ifl_to_mf3( sm2, m2 );
 
     CPU_TIME_TO_STDOUT( bmath_mf3_s_mul( m1, m2, m3 ) );
-//    CPU_TIME_TO_STDOUT( bmath_mf3_sf_s_mul1( sm1, sm2, sm3 ) );
-    CPU_TIME_TO_STDOUT( bmath_mf3_sf_s_mul(  sm1, sm2, sm3 ) );
+//    CPU_TIME_TO_STDOUT( bmath_asmf3_s_mul1( sm1, sm2, sm3 ) );
+    CPU_TIME_TO_STDOUT( bmath_asmf3_s_mul(  sm1, sm2, sm3 ) );
 
-//    bmath_mf3_sf_s_to_stdout( sm3 );
+//    bmath_asmf3_s_to_stdout( sm3 );
 
-    bmath_mf3_sf_s_cpy_ifl_to_mf3( sm3, m4 );
+    bmath_asmf3_s_cpy_ifl_to_mf3( sm3, m4 );
 
     ASSERT( bmath_mf3_s_is_near_equ( m3, m4, 1E-8 ) );
 
@@ -504,21 +504,21 @@ void bmath_mf3_sf_s_mul_eval()
 
 //----------------------------------------------------------------------------------------------------------------------
 
-void bmath_mf3_sx_s_convolution_eval1()
+void bmath_xsmf3_s_convolution_eval1()
 {
     BCORE_LIFE_INIT();
 
     BCORE_LIFE_CREATE( bmath_mf3_s, m1 );
-    BCORE_LIFE_CREATE( bmath_mf3_sx_s, sm1 );
+    BCORE_LIFE_CREATE( bmath_xsmf3_s, sm1 );
 
-    bmath_mf3_sx_s_set_splicing_for_convolution_1d( sm1, 32, 4, 2 );
-//    bmath_mf3_sx_s_set_splicing_for_convolution_2d( sm1, 3, 3, 2, 3, 1, 1 );
-    bmath_mf3_sx_s_fit_size_data( sm1 );
+    bmath_xsmf3_s_set_splicing_for_convolution_1d( sm1, 32, 4, 2 );
+//    bmath_xsmf3_s_set_splicing_for_convolution_2d( sm1, 3, 3, 2, 3, 1, 1 );
+    bmath_xsmf3_s_fit_size_data( sm1 );
     for( sz_t i = 0; i < sm1->v_size; i++ ) sm1->v_data[ i ] = i;
 
     bmath_mf3_s_set_size( m1, sm1->rows, sm1->xons * sm1->slos );
 
-    bmath_mf3_sx_s_cpy_ifl_to_mf3( sm1, m1 );
+    bmath_xsmf3_s_cpy_ifl_to_mf3( sm1, m1 );
 
     bmath_mf3_s_to_stdout( m1 );
 
@@ -527,21 +527,21 @@ void bmath_mf3_sx_s_convolution_eval1()
 
 //----------------------------------------------------------------------------------------------------------------------
 
-void bmath_mf3_sf_s_convolution_eval1()
+void bmath_asmf3_s_convolution_eval1()
 {
     BCORE_LIFE_INIT();
 
     BCORE_LIFE_CREATE( bmath_mf3_s, m1 );
-    BCORE_LIFE_CREATE( bmath_mf3_sf_s, sm1 );
+    BCORE_LIFE_CREATE( bmath_asmf3_s, sm1 );
 
-    bmath_mf3_sf_s_set_splicing_for_convolution_1d( sm1, 32, 4, 2 );
-//    bmath_mf3_sf_s_set_splicing_for_convolution_2d( sm1, 3, 3, 2, 3, 1, 1 );
-    bmath_mf3_sf_s_fit_size_data( sm1 );
+    bmath_asmf3_s_set_splicing_for_convolution_1d( sm1, 32, 4, 2 );
+//    bmath_asmf3_s_set_splicing_for_convolution_2d( sm1, 3, 3, 2, 3, 1, 1 );
+    bmath_asmf3_s_fit_size_data( sm1 );
     for( sz_t i = 0; i < sm1->v_size; i++ ) sm1->v_data[ i ] = i;
 
     bmath_mf3_s_set_size( m1, sm1->rows, sm1->cols );
 
-    bmath_mf3_sf_s_cpy_ifl_to_mf3( sm1, m1 );
+    bmath_asmf3_s_cpy_ifl_to_mf3( sm1, m1 );
 
     bmath_mf3_s_to_stdout( m1 );
 
@@ -550,7 +550,7 @@ void bmath_mf3_sf_s_convolution_eval1()
 
 //----------------------------------------------------------------------------------------------------------------------
 
-void bmath_mf3_sx_s_convolution_eval2()
+void bmath_xsmf3_s_convolution_eval2()
 {
     BCORE_LIFE_INIT();
 
@@ -559,9 +559,9 @@ void bmath_mf3_sx_s_convolution_eval2()
     BCORE_LIFE_CREATE( bmath_mf3_s, m3 );
     BCORE_LIFE_CREATE( bmath_mf3_s, m4 );
 
-    BCORE_LIFE_CREATE( bmath_mf3_sx_s, sm1 );
-    BCORE_LIFE_CREATE( bmath_mf3_sx_s, sm2 );
-    BCORE_LIFE_CREATE( bmath_mf3_sx_s, sm3 );
+    BCORE_LIFE_CREATE( bmath_xsmf3_s, sm1 );
+    BCORE_LIFE_CREATE( bmath_xsmf3_s, sm2 );
+    BCORE_LIFE_CREATE( bmath_xsmf3_s, sm3 );
 
     sz_t k_rows  = 32;
     sz_t k_cols  = 32;
@@ -569,29 +569,29 @@ void bmath_mf3_sx_s_convolution_eval2()
     sz_t kernels = 32;
     u2_t rval = 1234;
 
-    bmath_mf3_sx_s_set_splicing_for_convolution_2d( sm1, 64, 64 * k_slos, k_rows, k_cols * k_slos, 1, k_slos );
-    bmath_mf3_sx_s_fit_size_data( sm1 );
+    bmath_xsmf3_s_set_splicing_for_convolution_2d( sm1, 64, 64 * k_slos, k_rows, k_cols * k_slos, 1, k_slos );
+    bmath_xsmf3_s_fit_size_data( sm1 );
 //    for( sz_t i = 0; i < sm1->v_size; i++ ) sm1->v_data[ i ] = i;
-    bmath_mf3_sx_s_set_random( sm1, false, false, 0, 1.0, -1.0, 1.0, &rval );
-//    bmath_mf3_sx_s_to_stdout( sm1 );
+    bmath_xsmf3_s_set_random( sm1, false, false, 0, 1.0, -1.0, 1.0, &rval );
+//    bmath_xsmf3_s_to_stdout( sm1 );
 
-    bmath_mf3_sx_s_set_size( sm2, sm1->xons * sm1->slos, 1, kernels );
-    bmath_mf3_sx_s_set_random( sm2, false, false, 0, 1.0, -1.0, 1.0, &rval );
+    bmath_xsmf3_s_set_size( sm2, sm1->xons * sm1->slos, 1, kernels );
+    bmath_xsmf3_s_set_random( sm2, false, false, 0, 1.0, -1.0, 1.0, &rval );
 
-    bmath_mf3_sx_s_set_size( sm3, sm1->rows, 1, kernels );
+    bmath_xsmf3_s_set_size( sm3, sm1->rows, 1, kernels );
 
     bmath_mf3_s_set_size( m1, sm1->rows, sm1->xons * sm1->slos );
     bmath_mf3_s_set_size( m2, sm2->rows, sm2->xons * sm2->slos );
     bmath_mf3_s_set_size( m3, sm3->rows, sm3->xons * sm3->slos );
     bmath_mf3_s_set_size( m4, sm3->rows, sm3->xons * sm3->slos );
 
-    bmath_mf3_sx_s_cpy_ifl_to_mf3( sm1, m1 );
-    bmath_mf3_sx_s_cpy_ifl_to_mf3( sm2, m2 );
+    bmath_xsmf3_s_cpy_ifl_to_mf3( sm1, m1 );
+    bmath_xsmf3_s_cpy_ifl_to_mf3( sm2, m2 );
 
-    CPU_TIME_TO_STDOUT( bmath_mf3_sx_s_mul( sm1, sm2, sm3 ) );
+    CPU_TIME_TO_STDOUT( bmath_xsmf3_s_mul( sm1, sm2, sm3 ) );
     CPU_TIME_TO_STDOUT( bmath_mf3_s_mul( m1, m2, m3 ) );
 
-    bmath_mf3_sx_s_cpy_ifl_to_mf3( sm3, m4 );
+    bmath_xsmf3_s_cpy_ifl_to_mf3( sm3, m4 );
 
     ASSERT( bmath_mf3_s_is_near_equ( m3, m4, 1E-8 ) );
 
