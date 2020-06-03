@@ -153,8 +153,14 @@ void mf3_s_eval( void )
 
 int main( void )
 {
-    bcore_register_signal_handler( bmath_signal_handler, 0 );
-    if( bcore_plant_run_globally() ) { bcore_down( true ); return 0; }
+    BETH_PLANT_OPEN;
+    BETH_PLANT_USE( bmath );
+
+    beth_plant_build_from_file( "../beth/lib/bmath/bmath_plant_builder.cfg" );
+    if( beth_plant_update_required() ) { beth_plant_update(); BETH_PLANT_CLOSEV( true ); return 0; }
+
+    //bcore_register_signal_handler( bmath_signal_handler, 0 );
+    //if( bcore_plant_run_globally() ) { bcore_down( true ); return 0; }
 
     //test_simd();
     //return 0;
@@ -194,6 +200,6 @@ int main( void )
 //    CPU_TIME_TO_STDOUT( bcore_run_signal_selftest( typeof( "bmath_adaptive_mlp" ), NULL ) );
 
     //snn_selftest2();
-    bcore_down( true );
+    BETH_PLANT_CLOSEV( true );
     return 0;
 }
