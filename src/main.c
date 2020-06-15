@@ -92,7 +92,7 @@ void mf3_eval( void )
 //    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, mf2_s_svd, bmath_mf2_s_svd );
 //    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, mf3_s_ubd, bmath_mf3_s_ubd );
 //    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, mf3_s_lbd, bmath_mf3_s_lbd );
-//    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, mf3_s_svd, bmath_mf3_s_svd );
+    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, mf3_s_svd, bmath_mf3_s_svd );
 
 //    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, mf2_s_qrd    , bmath_mf2_s_qrd );
 //    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, mf2_s_qrd_pmt, bmath_mf2_s_qrd_pmt );
@@ -153,11 +153,10 @@ void mf3_s_eval( void )
 
 int main( void )
 {
-    BETH_PLANT_OPEN;
     BETH_PLANT_USE( bmath );
 
-    beth_plant_build_from_file( "../beth/lib/bmath/bmath_plant_builder.cfg" );
-    if( beth_plant_update_required() ) { beth_plant_update(); BETH_PLANT_CLOSEV( true ); return 0; }
+//    beth_plant_build_from_file( "../beth/lib/bmath/bmath_plant_builder.cfg" );
+//    if( beth_plant_update_required() ) { beth_plant_update(); BETH_PLANT_CLOSEV( true ); return 0; }
 
     //bcore_register_signal_handler( bmath_signal_handler, 0 );
     //if( bcore_plant_run_globally() ) { bcore_down( true ); return 0; }
