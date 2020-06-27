@@ -44,29 +44,29 @@ void mf3_eval( void )
 //    eval->rows = 992; eval->cols = 992; bmath_arr_mfx_eval_s_push( arr_eval, eval );
 
     eval->rows = 1024; eval->cols = 1024;  eval->dim3 = -1; bmath_arr_mfx_eval_s_push( arr_eval_sqr, eval );
-//    eval->rows = 200; eval->cols = 200;  eval->dim3 = -1; bmath_arr_mfx_eval_s_push( arr_eval_sqr, eval );
+    eval->rows = 200; eval->cols = 200;  eval->dim3 = -1; bmath_arr_mfx_eval_s_push( arr_eval_sqr, eval );
 
-//    eval->rows = 654; eval->cols = 233; eval->dim3 = 739; bmath_arr_mfx_eval_s_push( arr_eval, eval );
-//    eval->rows = 233; eval->cols = 654; eval->dim3 = 739; bmath_arr_mfx_eval_s_push( arr_eval, eval );
-//    eval->rows = 200; eval->cols = 200; eval->dim3 = 200; bmath_arr_mfx_eval_s_push( arr_eval, eval );
+    eval->rows = 654; eval->cols = 233; eval->dim3 = 739; bmath_arr_mfx_eval_s_push( arr_eval, eval );
+    eval->rows = 233; eval->cols = 654; eval->dim3 = 739; bmath_arr_mfx_eval_s_push( arr_eval, eval );
+    eval->rows = 200; eval->cols = 200; eval->dim3 = 200; bmath_arr_mfx_eval_s_push( arr_eval, eval );
     eval->rows = 1024; eval->cols = 1024; eval->dim3 = -1; bmath_arr_mfx_eval_s_push( arr_eval, eval );
 
-//    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, mf3_s_mul    , bmath_mf3_s_mul_esp );
-//    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, mf2_s_mul    , bmath_mf2_s_mul_esp );
-//    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, mf3_s_htp_mul, bmath_mf3_s_htp_mul_esp );
-//    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, mf2_s_htp_mul, bmath_mf2_s_htp_mul_esp );
+    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, mf3_s_mul    , bmath_mf3_s_mul_esp );
+    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, mf2_s_mul    , bmath_mf2_s_mul_esp );
+    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, mf3_s_htp_mul, bmath_mf3_s_htp_mul_esp );
+    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, mf2_s_htp_mul, bmath_mf2_s_htp_mul_esp );
 
-//    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, xsmf2_s_mul,         bmath_xsmf2_s_mul );
-//    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, xsmf3_s_mul,         bmath_xsmf3_s_mul );
-//
-//    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, xsmf2_s_mul_htp,     bmath_xsmf2_s_mul_htp );
-//    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, xsmf3_s_mul_htp,     bmath_xsmf3_s_mul_htp );
-//
-//    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, xsmf2_s_htp_mul,     bmath_xsmf2_s_htp_mul );
-//    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, xsmf3_s_htp_mul,     bmath_xsmf3_s_htp_mul );
-//
-//    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, xsmf2_s_htp_mul_htp, bmath_xsmf2_s_htp_mul_htp );
-//    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, xsmf3_s_htp_mul_htp, bmath_xsmf3_s_htp_mul_htp );
+    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, xsmf2_s_mul,         bmath_xsmf2_s_mul );
+    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, xsmf3_s_mul,         bmath_xsmf3_s_mul );
+
+    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, xsmf2_s_mul_htp,     bmath_xsmf2_s_mul_htp );
+    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, xsmf3_s_mul_htp,     bmath_xsmf3_s_mul_htp );
+
+    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, xsmf2_s_htp_mul,     bmath_xsmf2_s_htp_mul );
+    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, xsmf3_s_htp_mul,     bmath_xsmf3_s_htp_mul );
+
+    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, xsmf2_s_htp_mul_htp, bmath_xsmf2_s_htp_mul_htp );
+    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, xsmf3_s_htp_mul_htp, bmath_xsmf3_s_htp_mul_htp );
 
     BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, asmf2_s_mul,         bmath_asmf2_s_mul );
     BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, asmf3_s_mul,         bmath_asmf3_s_mul );
@@ -77,51 +77,51 @@ void mf3_eval( void )
     BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, asmf2_s_htp_mul_htp, bmath_asmf2_s_htp_mul_htp );
     BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, asmf3_s_htp_mul_htp, bmath_asmf3_s_htp_mul_htp );
 
-//    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, mf2_s_mul,         bmath_mf2_s_mul );
-//    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, mf2_s_mul_htp,     bmath_mf2_s_mul_htp );
-//    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, mf2_s_htp_mul,     bmath_mf2_s_htp_mul );
-//    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, mf2_s_htp_mul_htp, bmath_mf2_s_htp_mul_htp );
+    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, mf2_s_mul,         bmath_mf2_s_mul );
+    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, mf2_s_mul_htp,     bmath_mf2_s_mul_htp );
+    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, mf2_s_htp_mul,     bmath_mf2_s_htp_mul );
+    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, mf2_s_htp_mul_htp, bmath_mf2_s_htp_mul_htp );
 
-//    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, mf3_s_mul,         bmath_mf3_s_mul );
-//    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, mf3_s_mul_htp,     bmath_mf3_s_mul_htp );
-//    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, mf3_s_htp_mul,     bmath_mf3_s_htp_mul );
-//    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, mf3_s_htp_mul_htp, bmath_mf3_s_htp_mul_htp );
+    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, mf3_s_mul,         bmath_mf3_s_mul );
+    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, mf3_s_mul_htp,     bmath_mf3_s_mul_htp );
+    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, mf3_s_htp_mul,     bmath_mf3_s_htp_mul );
+    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, mf3_s_htp_mul_htp, bmath_mf3_s_htp_mul_htp );
 
-//    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, mf2_s_ubd, bmath_mf2_s_ubd );
-//    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, mf2_s_lbd, bmath_mf2_s_lbd );
-//    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, mf2_s_svd, bmath_mf2_s_svd );
-//    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, mf3_s_ubd, bmath_mf3_s_ubd );
-//    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, mf3_s_lbd, bmath_mf3_s_lbd );
+    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, mf2_s_ubd, bmath_mf2_s_ubd );
+    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, mf2_s_lbd, bmath_mf2_s_lbd );
+    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, mf2_s_svd, bmath_mf2_s_svd );
+    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, mf3_s_ubd, bmath_mf3_s_ubd );
+    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, mf3_s_lbd, bmath_mf3_s_lbd );
     BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, mf3_s_svd, bmath_mf3_s_svd );
 
-//    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, mf2_s_qrd    , bmath_mf2_s_qrd );
-//    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, mf2_s_qrd_pmt, bmath_mf2_s_qrd_pmt );
-//    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, mf3_s_qrd    , bmath_mf3_s_qrd );
-//    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, mf3_s_qrd_pmt, bmath_mf3_s_qrd_pmt );
-//
-//    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, mf2_s_lqd    , bmath_mf2_s_lqd );
-//    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, mf2_s_pmt_lqd, bmath_mf2_s_pmt_lqd );
-//    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, mf3_s_lqd    , bmath_mf3_s_lqd );
-//    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, mf3_s_pmt_lqd, bmath_mf3_s_pmt_lqd );
+    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, mf2_s_qrd    , bmath_mf2_s_qrd );
+    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, mf2_s_qrd_pmt, bmath_mf2_s_qrd_pmt );
+    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, mf3_s_qrd    , bmath_mf3_s_qrd );
+    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, mf3_s_qrd_pmt, bmath_mf3_s_qrd_pmt );
 
-//    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval_sqr, mf2_s_trd    , bmath_mf2_s_trd );
-//    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval_sqr, mf2_s_evd_htp, bmath_mf2_s_evd_htp );
-//    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval_sqr, mf3_s_trd    , bmath_mf3_s_trd );
-//    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval_sqr, mf3_s_evd_htp, bmath_mf3_s_evd_htp );
-//
-//    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval_sqr, mf2_s_cld    , bmath_mf2_s_decompose_cholesky );
+    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, mf2_s_lqd    , bmath_mf2_s_lqd );
+    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, mf2_s_pmt_lqd, bmath_mf2_s_pmt_lqd );
+    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, mf3_s_lqd    , bmath_mf3_s_lqd );
+    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval, mf3_s_pmt_lqd, bmath_mf3_s_pmt_lqd );
+
+    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval_sqr, mf2_s_trd    , bmath_mf2_s_trd );
+    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval_sqr, mf2_s_evd_htp, bmath_mf2_s_evd_htp );
+    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval_sqr, mf3_s_trd    , bmath_mf3_s_trd );
+    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval_sqr, mf3_s_evd_htp, bmath_mf3_s_evd_htp );
+
+    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval_sqr, mf2_s_cld    , bmath_mf2_s_decompose_cholesky );
 //    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval_sqr, mf2_s_lud    , bmath_mf2_s_decompose_luc );
-//    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval_sqr, mf2_s_inv    , bmath_mf2_s_inv );
-//    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval_sqr, mf2_s_pdf_inv, bmath_mf2_s_pdf_inv );
-//    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval_sqr, mf2_s_piv    , bmath_mf2_s_piv );
-//    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval_sqr, mf2_s_hsm_piv, bmath_mf2_s_hsm_piv );
+    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval_sqr, mf2_s_inv    , bmath_mf2_s_inv );
+    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval_sqr, mf2_s_pdf_inv, bmath_mf2_s_pdf_inv );
+    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval_sqr, mf2_s_piv    , bmath_mf2_s_piv );
+    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval_sqr, mf2_s_hsm_piv, bmath_mf2_s_hsm_piv );
 //
-//    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval_sqr, mf3_s_cld    , bmath_mf3_s_decompose_cholesky );
+    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval_sqr, mf3_s_cld    , bmath_mf3_s_decompose_cholesky );
 //    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval_sqr, mf3_s_lud    , bmath_mf3_s_decompose_luc );
-//    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval_sqr, mf3_s_inv    , bmath_mf3_s_inv );
-//    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval_sqr, mf3_s_pdf_inv, bmath_mf3_s_pdf_inv );
-//    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval_sqr, mf3_s_piv    , bmath_mf3_s_piv );
-//    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval_sqr, mf3_s_hsm_piv, bmath_mf3_s_hsm_piv );
+    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval_sqr, mf3_s_inv    , bmath_mf3_s_inv );
+    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval_sqr, mf3_s_pdf_inv, bmath_mf3_s_pdf_inv );
+    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval_sqr, mf3_s_piv    , bmath_mf3_s_piv );
+    BMATH_ARR_MFX_EVAL_S_RUN_TO_STDOUT( arr_eval_sqr, mf3_s_hsm_piv, bmath_mf3_s_hsm_piv );
 
 //    st_s_print_d( bcore_spect_status() );
 
