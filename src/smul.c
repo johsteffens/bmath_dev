@@ -85,8 +85,8 @@ void bmath_xsmf3_s_htp_mul_eval()
     bmath_mf3_s_set_size( m4, rows3, xons3 * slos3 );
 
     u3_t rval = 1234;
-    bmath_xsmf3_s_set_random( sm1, false, false, 0, 1.0, -1.0, 1.0, &rval );
-    bmath_xsmf3_s_set_random( sm2, false, false, 0, 1.0, -1.0, 1.0, &rval );
+    bmath_xsmf3_s_set_random_u3( sm1, false, false, 0, 1.0, -1.0, 1.0, &rval );
+    bmath_xsmf3_s_set_random_u3( sm2, false, false, 0, 1.0, -1.0, 1.0, &rval );
     bmath_xsmf3_s_cpy_ifl_to_mf3( sm1, m1 );
     bmath_xsmf3_s_cpy_ifl_to_mf3( sm2, m2 );
 
@@ -171,8 +171,8 @@ void bmath_xsmf3_s_mul_htp_eval()
     bmath_mf3_s_set_size( m4, rows3, xons3 * slos3 );
 
     u3_t rval = 1234;
-    bmath_xsmf3_s_set_random( sm1, false, false, 0, 1.0, -1.0, 1.0, &rval );
-    bmath_xsmf3_s_set_random( sm2, false, false, 0, 1.0, -1.0, 1.0, &rval );
+    bmath_xsmf3_s_set_random_u3( sm1, false, false, 0, 1.0, -1.0, 1.0, &rval );
+    bmath_xsmf3_s_set_random_u3( sm2, false, false, 0, 1.0, -1.0, 1.0, &rval );
     bmath_xsmf3_s_cpy_ifl_to_mf3( sm1, m1 );
     bmath_xsmf3_s_cpy_ifl_to_mf3( sm2, m2 );
 
@@ -250,8 +250,8 @@ void bmath_xsmf3_s_mul_eval()
     bmath_mf3_s_set_size( m4, rows1,         xons2 * slos2 );
 
     u3_t rval = 1234;
-    bmath_xsmf3_s_set_random( sm1, false, false, 0, 1.0, -1.0, 1.0, &rval );
-    bmath_xsmf3_s_set_random( sm2, false, false, 0, 1.0, -1.0, 1.0, &rval );
+    bmath_xsmf3_s_set_random_u3( sm1, false, false, 0, 1.0, -1.0, 1.0, &rval );
+    bmath_xsmf3_s_set_random_u3( sm2, false, false, 0, 1.0, -1.0, 1.0, &rval );
     bmath_xsmf3_s_cpy_ifl_to_mf3( sm1, m1 );
     bmath_xsmf3_s_cpy_ifl_to_mf3( sm2, m2 );
 
@@ -330,8 +330,8 @@ void bmath_asmf3_s_htp_mul_eval()
     bmath_mf3_s_set_size( m4, rows3, cols3 );
 
     u3_t rval = 1234;
-    bmath_asmf3_s_set_random( sm1, false, false, 0, 1.0, -1.0, 1.0, &rval );
-    bmath_asmf3_s_set_random( sm2, false, false, 0, 1.0, -1.0, 1.0, &rval );
+    bmath_asmf3_s_set_random_u3( sm1, false, false, 0, 1.0, -1.0, 1.0, &rval );
+    bmath_asmf3_s_set_random_u3( sm2, false, false, 0, 1.0, -1.0, 1.0, &rval );
     bmath_asmf3_s_cpy_ifl_to_mf3( sm1, m1 );
     bmath_asmf3_s_cpy_ifl_to_mf3( sm2, m2 );
 
@@ -409,8 +409,8 @@ void bmath_asmf3_s_mul_htp_eval()
     bmath_mf3_s_set_size( m4, rows3, cols3 );
 
     u3_t rval = 1234;
-    bmath_asmf3_s_set_random( sm1, false, false, 0, 1.0, -1.0, 1.0, &rval );
-    bmath_asmf3_s_set_random( sm2, false, false, 0, 1.0, -1.0, 1.0, &rval );
+    bmath_asmf3_s_set_random_u3( sm1, false, false, 0, 1.0, -1.0, 1.0, &rval );
+    bmath_asmf3_s_set_random_u3( sm2, false, false, 0, 1.0, -1.0, 1.0, &rval );
     bmath_asmf3_s_cpy_ifl_to_mf3( sm1, m1 );
     bmath_asmf3_s_cpy_ifl_to_mf3( sm2, m2 );
 
@@ -484,8 +484,8 @@ void bmath_asmf3_s_mul_eval()
     bmath_mf3_s_set_size( m4, rows1, cols2 );
 
     u3_t rval = 1234;
-    bmath_asmf3_s_set_random( sm1, false, false, 0, 1.0, -1.0, 1.0, &rval );
-    bmath_asmf3_s_set_random( sm2, false, false, 0, 1.0, -1.0, 1.0, &rval );
+    bmath_asmf3_s_set_random_u3( sm1, false, false, 0, 1.0, -1.0, 1.0, &rval );
+    bmath_asmf3_s_set_random_u3( sm2, false, false, 0, 1.0, -1.0, 1.0, &rval );
     bmath_asmf3_s_cpy_ifl_to_mf3( sm1, m1 );
     bmath_asmf3_s_cpy_ifl_to_mf3( sm2, m2 );
 
@@ -572,11 +572,11 @@ void bmath_xsmf3_s_convolution_eval2()
     bmath_xsmf3_s_set_splicing_for_convolution_2d( sm1, 64, 64 * k_slos, k_rows, k_cols * k_slos, 1, k_slos );
     bmath_xsmf3_s_fit_size_data( sm1 );
 //    for( sz_t i = 0; i < sm1->v_size; i++ ) sm1->v_data[ i ] = i;
-    bmath_xsmf3_s_set_random( sm1, false, false, 0, 1.0, -1.0, 1.0, &rval );
+    bmath_xsmf3_s_set_random_u3( sm1, false, false, 0, 1.0, -1.0, 1.0, &rval );
 //    bmath_xsmf3_s_to_stdout( sm1 );
 
     bmath_xsmf3_s_set_size( sm2, sm1->xons * sm1->slos, 1, kernels );
-    bmath_xsmf3_s_set_random( sm2, false, false, 0, 1.0, -1.0, 1.0, &rval );
+    bmath_xsmf3_s_set_random_u3( sm2, false, false, 0, 1.0, -1.0, 1.0, &rval );
 
     bmath_xsmf3_s_set_size( sm3, sm1->rows, 1, kernels );
 
